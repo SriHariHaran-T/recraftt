@@ -2,6 +2,11 @@
 
 from difflib import SequenceMatcher
 import random
+import sounddevice as sd
+from scipy.io.wavfile import write
+import time
+import whisper
+import re
 
 prompts = [
     "Tell me about a challenge you recently overcame.",
@@ -22,10 +27,6 @@ print()
 
 # --- Session Code ---
 
-import sounddevice as sd
-from scipy.io.wavfile import write
-import time
-import whisper
 
 # --- Settings ---
 duration = 15
@@ -56,12 +57,14 @@ result = model.transcribe(filename)
 full_text = result["text"]
 segments = result["segments"]
 
-print("Transcript:")
-print(full_text)
+print("Transcript:", full_text)
 
 # --- Speaking pace ---
-word_count = len(full_text.split())
-total_duration = segments[-1]["end"]
+splitted_text = full_text.split()
+word_count = len(splitted_text)
+total_duration = segments[-1]["end"] if segments else duration
+if total_duration == 0:
+    total_duration = 0.1  # prevent ZeroDivisionError
 duration_minutes = total_duration / 60
 speaking_pace = word_count / duration_minutes
 
@@ -75,20 +78,47 @@ lower_text = full_text.lower()
 filler_counts = {}
 
 for filler in filler_words:
-    count = lower_text.count(filler)
+    pattern = r'\b' + re.escape(filler) + r'\b'
+    count = len(re.findall(pattern, lower_text))
     if count > 0:
         filler_counts[filler] = count
+    match filler:
+        case "um":
+            print(f"Found 'um' {count} time(s)")
+        case "uh":
+            print(f"Found 'uh' {count} time(s)")
+        case "mm":
+            print(f"Found 'mm' {count} time(s)")
+        case "hmm":
+            print(f"Found 'hmm' {count} time(s)")
+        case "like":
+            print(f"Found 'like' {count} time(s)")
+        case "you know":
+            print(f"Found 'you know' {count} time(s)")
+        case "so":
+            print(f"Found 'so' {count} time(s)")
+        case "actually":
+            print(f"Found 'actually' {count} time(s)")
+        case "basically":
+            print(f"Found 'basically' {count} time(s)")
+        case "literally":
+            print(f"Found 'literally' {count} time(s)")
+        case "right":
+            print(f"Found 'right' {count} time(s)")
+        case "okay":
+            print(f"Found 'okay' {count} time(s)")
+        case "well":
+            print(f"Found 'well' {count} time(s)")
 
 print(f"\nFiller words detected: {filler_counts}")
 
 # --- Repetition Detection (phrase-level) ---
-words = full_text.split()
 window_size = 4  # check 4-word chunks
 repeated_phrases = []
 
-for i in range(len(words) - window_size * 2):
-    phrase1 = " ".join(words[i:i+window_size]).lower()
-    phrase2 = " ".join(words[i+window_size:i+window_size*2]).lower()
+for i in range(len(splitted_text) - window_size * 2 + 1):
+    phrase1 = " ".join(splitted_text[i:i+window_size]).lower()
+    phrase2 = " ".join(splitted_text[i+window_size:i+window_size*2]).lower()
     similarity = SequenceMatcher(None, phrase1, phrase2).ratio()
     if similarity > 0.7:
         repeated_phrases.append((phrase1, phrase2))
@@ -114,6 +144,8 @@ elif total_fillers <= 2:
     feedback.append(f"You used {total_fillers} filler word(s). That's pretty minimal — nice control.")
 else:
     most_common_filler = max(filler_counts, key=filler_counts.get)
+    # found the most common filler word
+
     feedback.append(f"You used {total_fillers} filler words, most often '{most_common_filler}'. Try pausing silently instead of filling gaps with words.")
 
 if total_fillers > 2:
