@@ -58,3 +58,19 @@ def get_streak():
             break
 
     return streak
+
+
+def delete_session(index: int):
+    if not os.path.exists(HISTORY_FILE):
+        return False
+
+    with open(HISTORY_FILE, "r") as f:
+        history = json.load(f)
+
+    if 0 <= index < len(history):
+        history.pop(index)
+        with open(HISTORY_FILE, "w") as f:
+            json.dump(history, f, indent=2)
+        return True
+
+    return False

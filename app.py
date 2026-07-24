@@ -13,7 +13,7 @@ from transcriber import transcribe_audio
 from analyzer import calculate_pace, detect_fillers, detect_corrections
 from feedback import generate_feedback
 from ai_analyzer import detect_repetition_ai
-from tracker import save_session, get_streak, HISTORY_FILE
+from tracker import save_session, get_streak, delete_session, HISTORY_FILE
 
 app = FastAPI(title="recraftt. Speech Analyzer API")
 
@@ -48,6 +48,27 @@ def api_get_history():
             with open(HISTORY_FILE, "r") as f:
                 history = json.load(f)
         return {
+            "streak": streak,
+            "history": history
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/history/{index}")
+def api_delete_history(index: int):
+    """Delete a specific session entry by index."""
+    try:
+        success = delete_session(index)
+        if not success:
+            raise HTTPException(status_code=404, detail="Session not found")
+        
+        streak = get_streak()
+        history = []
+        if os.path.exists(HISTORY_FILE):
+            with open(HISTORY_FILE, "r") as f:
+                history = json.load(f)
+        return {
+            "message": "Session deleted successfully",
             "streak": streak,
             "history": history
         }

@@ -98,10 +98,10 @@ function renderHistoryList(history) {
         return;
     }
 
-    // Show newer sessions first
-    const sortedHistory = [...history].reverse();
+    // Show newer sessions first while keeping track of original index
+    const sortedHistory = history.map((session, index) => ({ session, index })).reverse();
     
-    sortedHistory.forEach(session => {
+    sortedHistory.forEach(({ session, index }) => {
         const card = document.createElement('div');
         card.className = 'history-card';
         
@@ -109,8 +109,13 @@ function renderHistoryList(history) {
         
         card.innerHTML = `
             <div class="history-meta">
-                <span>${session.date}</span>
-                <span>${session.time}</span>
+                <span>${session.date} • ${session.time}</span>
+                <button class="delete-session-btn" title="Delete Session">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
             </div>
             <h4>${session.prompt || 'Speaking Practice'}</h4>
             <div class="history-stats">
@@ -119,6 +124,15 @@ function renderHistoryList(history) {
                 <span class="history-stat-pill">${session.corrections ? session.corrections.length : 0} Corrections</span>
             </div>
         `;
+
+        // Trash button handler
+        const deleteBtn = card.querySelector('.delete-session-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // prevent card click
+            if (confirm("Delete this session record?")) {
+                deleteSessionItem(index);
+            }
+        });
         
         card.addEventListener('click', () => {
             displaySessionResults(session);
@@ -128,6 +142,24 @@ function renderHistoryList(history) {
         
         historyList.appendChild(card);
     });
+}
+
+// Delete session item by API
+async function deleteSessionItem(index) {
+    try {
+        const response = await fetch(`/api/history/${index}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            const data = await response.json();
+            streakCount.textContent = data.streak || 0;
+            renderHistoryList(data.history || []);
+        } else {
+            alert("Failed to delete session.");
+        }
+    } catch (err) {
+        console.error("Error deleting session:", err);
+    }
 }
 
 // Draw a flat static waveform initially
