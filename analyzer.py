@@ -3,7 +3,17 @@ def calculate_pace(text, segments):
         return 0, 0, 0
 
     word_count = len(text.split())
-    total_duration = segments[-1]["end"]
+    
+    # Handle both dict-like segments and object-like segments (TranscriptionSegment)
+    last_segment = segments[-1]
+    if isinstance(last_segment, dict):
+        total_duration = last_segment.get("end", 0)
+    else:
+        total_duration = getattr(last_segment, "end", 0)
+
+    if total_duration <= 0:
+        return 0, word_count, 0
+
     duration_minutes = total_duration / 60
     pace = word_count / duration_minutes
     return pace, word_count, total_duration
