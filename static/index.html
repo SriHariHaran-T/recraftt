@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recraftt - Lovable Speech Analyzer</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" x2="12" y1="19" y2="22"></line>
+                </svg>
+            </div>
+            <h1>Recraftt <span>Speech</span></h1>
+        </div>
+
+        <div class="streak-badge" id="streakBadge">
+            <svg class="fire-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"></path>
+                <path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" fill="none" stroke="currentColor" stroke-width="2"></path>
+            </svg>
+            <span id="streakCount">0</span> Day Streak
+        </div>
+    </header>
+
+    <main class="dashboard-grid">
+        <!-- Left Side: Interactive Area -->
+        <section class="control-panel">
+            <!-- Prompt Card -->
+            <div class="card prompt-card">
+                <div class="card-header">
+                    <h2>Daily Speaking Prompt</h2>
+                    <button class="btn btn-secondary btn-icon" id="newPromptBtn" title="Get New Prompt">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="prompt-content">
+                    <p id="promptText">Loading prompt...</p>
+                </div>
+            </div>
+
+            <!-- Recorder Card -->
+            <div class="card recorder-card">
+                <div class="card-header">
+                    <h2>Voice Recorder</h2>
+                </div>
+                <div class="recorder-body">
+                    <div class="timer" id="recordingTimer">00:00</div>
+                    
+                    <div class="waveform-container">
+                        <canvas id="waveformCanvas"></canvas>
+                        <div class="status-pulse" id="recordStatusText">Click below to start practicing</div>
+                    </div>
+
+                    <div class="recorder-controls">
+                        <button class="record-btn" id="recordBtn">
+                            <div class="record-btn-inner"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Analytics & Feedback -->
+        <section class="analytics-panel">
+            <!-- Default Placeholder / Empty State -->
+            <div class="empty-state" id="emptyAnalytics">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h3>No Session Data Yet</h3>
+                <p>Complete a speaking prompt to see your pace, filler word frequency, and AI-powered recommendations.</p>
+            </div>
+
+            <!-- Results View (Hidden by default) -->
+            <div class="results-view hidden" id="resultsView">
+                <div class="card feedback-card">
+                    <div class="card-header">
+                        <h2>Analysis Results</h2>
+                        <span class="badge" id="resultsPromptBadge">Daily Practice</span>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">Speaking Pace</span>
+                            <div class="metric-val-container">
+                                <span class="metric-value" id="paceVal">0</span>
+                                <span class="metric-unit">WPM</span>
+                            </div>
+                            <div class="pace-gauge-wrapper">
+                                <div class="pace-gauge-track">
+                                    <div class="pace-gauge-fill" id="paceGaugeFill"></div>
+                                </div>
+                                <div class="pace-labels">
+                                    <span>Slow</span>
+                                    <span>Balanced</span>
+                                    <span>Fast</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <span class="metric-label">Duration</span>
+                            <div class="metric-val-container">
+                                <span class="metric-value" id="durationVal">0</span>
+                                <span class="metric-unit">Sec</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <span class="metric-label">Total Words</span>
+                            <div class="metric-val-container">
+                                <span class="metric-value" id="wordsVal">0</span>
+                                <span class="metric-unit">Words</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transcript Box -->
+                    <div class="section-title">Transcript</div>
+                    <div class="transcript-box">
+                        <p id="transcriptText"></p>
+                    </div>
+
+                    <!-- Filler Words & Corrections -->
+                    <div class="details-grid">
+                        <div class="detail-block">
+                            <div class="section-title">Filler Words</div>
+                            <div class="filler-cloud" id="fillerCloud">
+                                <!-- Dynamic tags go here -->
+                            </div>
+                        </div>
+                        <div class="detail-block">
+                            <div class="section-title">Self-Corrections</div>
+                            <ul class="correction-list" id="correctionList">
+                                <!-- Dynamic items go here -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- AI Repetition Rephraser -->
+                    <div class="section-title mt-4">AI Rephrasing Suggestions</div>
+                    <div id="aiAnalysisContainer">
+                        <!-- Dynamic AI Suggestions -->
+                    </div>
+
+                    <!-- Actionable Recommendations & Mission -->
+                    <div class="mission-section">
+                        <div class="mission-title">Mission for Tomorrow</div>
+                        <p class="mission-text" id="missionText"></p>
+                        
+                        <div class="feedback-points-wrapper">
+                            <div class="section-title text-sm">Key Takeaways</div>
+                            <ul class="feedback-points" id="feedbackPoints">
+                                <!-- Takeaway points -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- History Footer/Sidebar Section -->
+    <section class="history-section">
+        <div class="section-header-row">
+            <h2>Session History</h2>
+        </div>
+        <div class="history-list" id="historyList">
+            <!-- Historical cards go here -->
+        </div>
+    </section>
+
+    <!-- Loading Modal -->
+    <div class="modal-overlay hidden" id="loadingModal">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <h3>Analyzing Your Voice</h3>
+            <p>Whisper is transcribing and AI is detecting filler words and repetitions...</p>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
