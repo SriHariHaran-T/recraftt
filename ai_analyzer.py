@@ -10,7 +10,7 @@ client = OpenAI(
 )
 
 def detect_repetition_ai(transcript):
-    prompt = f"""You are analyzing a spoken transcript for self-corrections or repeated ideas
+    prompt = f"""You are analyzing a spoken transcript for self-corrections, broken english or repeated ideas
 where the speaker restarted or rephrased a thought mid-response.
 
 Transcript:
