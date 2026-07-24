@@ -15,7 +15,7 @@ from feedback import generate_feedback
 from ai_analyzer import detect_repetition_ai
 from tracker import save_session, get_streak, HISTORY_FILE
 
-app = FastAPI(title="Recraftt Speech Analyzer API")
+app = FastAPI(title="recraftt. Speech Analyzer API")
 
 # Add CORS Middleware to allow browser requests
 app.add_middleware(
