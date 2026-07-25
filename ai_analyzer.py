@@ -1,5 +1,7 @@
 import os
+# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
+# pyrefly: ignore [missing-import]
 from openai import OpenAI
 
 load_dotenv()
@@ -10,8 +12,22 @@ client = OpenAI(
 )
 
 def detect_repetition_ai(transcript):
-    prompt = f"""You are analyzing a spoken transcript for self-corrections, broken english or repeated ideas
-where the speaker restarted or rephrased a thought mid-response.
+    prompt = f"""You are an expert editor analyzing a recorded interview transcript.
+    Your job is to identify and correct speaking errors ONLY.
+    
+    Rules:
+    1. Find self-corrections, broken phrasing, restarts, and stutters.
+    2. Fix ONLY the mistakes — keep the meaning, vocabulary, and tone exactly the same.
+    3. DO NOT summarize, simplify, reword, improve grammar, add details, or change the style.
+    4. Output the corrected text ONLY, without explanations or labels.
+
+    Evaluate the user's communication in the following areas:
+    - Clarity of ideas
+    - Confidence
+    - Organization and structure
+    - Speaking flow
+    - Repeated phrases or restarts
+    - Overall communication effectiveness
 
 Transcript:
 \"\"\"{transcript}\"\"\"
