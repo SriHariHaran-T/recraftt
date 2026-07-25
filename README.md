@@ -14,13 +14,22 @@ recraftt. records your voice, transcribes it in the cloud, and delivers instant,
 - On-screen **countdown timer** tracks the length of each session
 - Recordings are sent securely to the backend as `.webm` audio blobs
 
+<img width="1920" height="957" alt="image" src="https://github.com/user-attachments/assets/d0a031ed-3221-47f0-a288-32f53ff21f79" />
+
+
 ### 📝 AI Transcription via Whisper
 - Audio is transcribed using **Whisper Base** model for fast, accurate speech-to-text
 - Returns word-level segments used to compute precise timing metrics
 - Gracefully handles silence alerts you if no speech is detected
 
+<img width="524" height="457" alt="image" src="https://github.com/user-attachments/assets/bc5cccc2-1409-4cf1-8847-4aa056c9a3fc" />
+
+
 ### 📊 Speech Metrics Dashboard
 After every session, you get an instant breakdown:
+
+<img width="552" height="734" alt="image" src="https://github.com/user-attachments/assets/7307e280-e0fe-43df-a76b-dd9049eb5089" />
+
 
 | Metric | What It Measures |
 |---|---|
@@ -68,6 +77,9 @@ After every session, you get an instant breakdown:
 - Individual sessions can be **deleted** from the UI
 - History persists across app restarts - no database required
 
+<img width="1214" height="243" alt="image" src="https://github.com/user-attachments/assets/6e9f67d8-1d9b-4770-9aae-17251d36f7e8" />
+
+
 ---
 
 ## 🏗️ Architecture
@@ -104,9 +116,7 @@ recraftt/
 ## 🗺️ Roadmap
 
 - [ ] Progress charts over time (pace trends, filler word reduction)
-- [ ] Export session history as PDF / CSV
 - [ ] User authentication & cloud sync
-- [ ] Mobile-responsive recorder UI
 - [ ] Custom prompt categories (job interviews, public speaking, storytelling)
 - [ ] Pronunciation scoring
 
