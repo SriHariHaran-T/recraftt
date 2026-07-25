@@ -60,7 +60,9 @@
 /* ===========================
    Reset & Base
    =========================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -109,7 +111,9 @@ body::before {
 /* ===========================
    Typography
    =========================== */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -203,8 +207,15 @@ h1, h2, h3 {
 }
 
 @keyframes flicker {
-    0%   { transform: scale(1) rotate(-3deg);   filter: drop-shadow(0 0 2px rgba(245,158,11,0.4)); }
-    100% { transform: scale(1.12) rotate(3deg); filter: drop-shadow(0 0 9px rgba(245,158,11,0.85)); }
+    0% {
+        transform: scale(1) rotate(-3deg);
+        filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.4));
+    }
+
+    100% {
+        transform: scale(1.12) rotate(3deg);
+        filter: drop-shadow(0 0 9px rgba(245, 158, 11, 0.85));
+    }
 }
 
 /* ===========================
@@ -219,10 +230,13 @@ h1, h2, h3 {
 }
 
 @media (max-width: 900px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.control-panel, .analytics-panel {
+.control-panel,
+.analytics-panel {
     display: flex;
     flex-direction: column;
     gap: 1.75rem;
@@ -252,7 +266,7 @@ h1, h2, h3 {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
     pointer-events: none;
 }
 
@@ -392,9 +406,17 @@ h1, h2, h3 {
 }
 
 @keyframes recordPulse {
-    0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.65); }
-    70%  { box-shadow: 0 0 0 22px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.65);
+    }
+
+    70% {
+        box-shadow: 0 0 0 22px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
 }
 
 /* ===========================
@@ -506,7 +528,9 @@ h1, h2, h3 {
 }
 
 @media (max-width: 600px) {
-    .metrics-grid { grid-template-columns: 1fr; }
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .metric-card {
@@ -558,7 +582,9 @@ h1, h2, h3 {
 }
 
 /* Pace Gauge */
-.pace-gauge-wrapper { margin-top: 0.4rem; }
+.pace-gauge-wrapper {
+    margin-top: 0.4rem;
+}
 
 .pace-gauge-track {
     height: 5px;
@@ -599,7 +625,9 @@ h1, h2, h3 {
     gap: 0.5rem;
 }
 
-.mt-4 { margin-top: 1.5rem; }
+.mt-4 {
+    margin-top: 1.5rem;
+}
 
 /* Transcript Box */
 .transcript-box {
@@ -624,7 +652,9 @@ h1, h2, h3 {
 }
 
 @media (max-width: 600px) {
-    .details-grid { grid-template-columns: 1fr; }
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Filler Tags */
@@ -703,7 +733,9 @@ h1, h2, h3 {
     gap: 0.5rem;
 }
 
-.ai-suggested svg { color: var(--blue-primary); }
+.ai-suggested svg {
+    color: var(--blue-primary);
+}
 
 /* Mission Section */
 .mission-section {
@@ -925,18 +957,28 @@ h1, h2, h3 {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ===========================
    Custom Scrollbar
    =========================== */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 ::-webkit-scrollbar-thumb {
     background: rgba(77, 168, 255, 0.18);
     border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(77, 168, 255, 0.35);
 }
@@ -945,7 +987,15 @@ h1, h2, h3 {
    Responsive tweaks
    =========================== */
 @media (max-width: 768px) {
-    body { padding: 1.25rem; }
-    .app-header { padding: 0.75rem 1.25rem; }
-    .timer { font-size: 2.25rem; }
+    body {
+        padding: 1.25rem;
+    }
+
+    .app-header {
+        padding: 0.75rem 1.25rem;
+    }
+
+    .timer {
+        font-size: 2.25rem;
+    }
 }
