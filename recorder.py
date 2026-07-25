@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 import sounddevice as sd
+# pyrefly: ignore [missing-import]
 from scipy.io.wavfile import write
 import time
 
