@@ -6,7 +6,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 # pyrefly: ignore [missing-import]
 from fastapi.staticfiles import StaticFiles
 # pyrefly: ignore [missing-import]
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 import json
@@ -143,5 +143,22 @@ async def api_analyze_audio(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Mount static files. Note: Serve index.html as root.
+# Serve index.html at root with no-cache headers so browsers/CDN never serve stale HTML.
+# This must be declared BEFORE the StaticFiles mount.
+@app.get("/", response_class=HTMLResponse)
+async def serve_index():
+    """Serve the main SPA page with cache-busting headers."""
+    index_path = os.path.join(os.path.dirname(__file__), "static", "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return HTMLResponse(
+        content=content,
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        },
+    )
+
+# Mount static files (CSS, JS, assets). Serves everything under /static path.
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
