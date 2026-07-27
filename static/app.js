@@ -481,6 +481,23 @@ async function renderProgressChart() {
         },
         options: {
             responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        pointRadius: 6,
+                        padding: 16
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Speaking Progress Over Time',
+                    font: {
+                        size: 16
+                    }
+                }
+            },
             scales: {
                 y: {
                     type: 'linear',
