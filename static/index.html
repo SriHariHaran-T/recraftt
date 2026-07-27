@@ -17,6 +17,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -196,6 +197,12 @@
     <section class="history-section">
         <div class="section-header-row">
             <h2 class="font-serif">Session History</h2>
+        </div>
+        <div class="card chart-card">
+            <div class="card-header">
+                <h2 class="font-serif">Progress Over Time</h2>
+            </div>
+            <canvas id="progressChart" height="100"></canvas>
         </div>
         <div class="history-list" id="historyList">
             <!-- Historical cards go here -->

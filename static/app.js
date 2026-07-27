@@ -78,10 +78,10 @@ async function fetchHistoryAndStreak() {
     try {
         const response = await fetch('/api/history');
         const data = await response.json();
-        
+
         // Update streak
         streakCount.textContent = data.streak || 0;
-        
+
         // Update history sidebar
         renderHistoryList(data.history || []);
     } catch (err) {
@@ -92,7 +92,7 @@ async function fetchHistoryAndStreak() {
 // Render History Items
 function renderHistoryList(history) {
     historyList.innerHTML = '';
-    
+
     if (history.length === 0) {
         historyList.innerHTML = '<div class="status-pulse" style="grid-column: 1/-1; padding: 2rem;">No previous sessions recorded.</div>';
         return;
@@ -100,13 +100,13 @@ function renderHistoryList(history) {
 
     // Show newer sessions first while keeping track of original index
     const sortedHistory = history.map((session, index) => ({ session, index })).reverse();
-    
+
     sortedHistory.forEach(({ session, index }) => {
         const card = document.createElement('div');
         card.className = 'history-card';
-        
+
         const totalFillers = Object.values(session.filler_counts || {}).reduce((a, b) => a + b, 0);
-        
+
         card.innerHTML = `
             <div class="history-meta">
                 <span>${session.date} • ${session.time}</span>
@@ -133,13 +133,13 @@ function renderHistoryList(history) {
                 deleteSessionItem(index);
             }
         });
-        
+
         card.addEventListener('click', () => {
             displaySessionResults(session);
             // Scroll results view into view on mobile
             resultsView.scrollIntoView({ behavior: 'smooth' });
         });
-        
+
         historyList.appendChild(card);
     });
 }
@@ -183,34 +183,34 @@ async function toggleRecording() {
         // Start Recording
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            
+
             // Set up Audio Context and Visualizer
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
             source = audioCtx.createMediaStreamSource(stream);
             source.connect(analyser);
-            
+
             analyser.fftSize = 256;
             const bufferLength = analyser.frequencyBinCount;
             dataArray = new Uint8Array(bufferLength);
-            
+
             // Configure MediaRecorder
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
-            
+
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     audioChunks.push(event.data);
                 }
             };
-            
+
             mediaRecorder.onstop = uploadAndAnalyze;
-            
+
             mediaRecorder.start();
             isRecording = true;
             recordBtn.classList.add('recording');
             recordStatusText.textContent = "Recording in progress... speak clearly";
-            
+
             // Start Timer
             secondsElapsed = 0;
             updateTimerDisplay();
@@ -218,10 +218,10 @@ async function toggleRecording() {
                 secondsElapsed++;
                 updateTimerDisplay();
             }, 1000);
-            
+
             // Start Visualizer Loop
             drawLiveWaveform();
-            
+
         } catch (err) {
             console.error("Microphone access denied:", err);
             alert("Could not access microphone. Please grant mic permissions and try again.");
@@ -230,11 +230,11 @@ async function toggleRecording() {
         // Stop Recording
         mediaRecorder.stop();
         mediaRecorder.stream.getTracks().forEach(track => track.stop());
-        
+
         isRecording = false;
         recordBtn.classList.remove('recording');
         recordStatusText.textContent = "Processing recording...";
-        
+
         // Stop timer & audio loop
         clearInterval(timerInterval);
         if (audioCtx) {
@@ -255,30 +255,30 @@ function updateTimerDisplay() {
 function drawLiveWaveform() {
     const width = waveformCanvas.width / window.devicePixelRatio;
     const height = waveformCanvas.height / window.devicePixelRatio;
-    
+
     animationFrameId = requestAnimationFrame(drawLiveWaveform);
-    
+
     analyser.getByteFrequencyData(dataArray);
-    
+
     canvasCtx.fillStyle = 'rgba(11, 15, 25, 0.2)'; // semi-translucent clear
     canvasCtx.fillRect(0, 0, width, height);
-    
+
     const barWidth = (width / dataArray.length) * 1.5;
     let barHeight;
     let x = 0;
-    
+
     for (let i = 0; i < dataArray.length; i++) {
         barHeight = dataArray[i] / 2;
-        
+
         // Custom emerald to cyan colors matching theme
         const red = 16 + (i * 2);
         const green = 185 - (i * 0.5);
         const blue = 129 + (i * 0.8);
         canvasCtx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
-        
+
         // Draw centered bars
         canvasCtx.fillRect(x, (height / 2) - (barHeight / 2), barWidth - 2, barHeight);
-        
+
         x += barWidth;
     }
 }
@@ -286,23 +286,23 @@ function drawLiveWaveform() {
 // Upload Blob & Analyze
 async function uploadAndAnalyze() {
     loadingModal.classList.remove('hidden');
-    
+
     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
     const formData = new FormData();
     formData.append('file', audioBlob, 'speaking_practice.webm');
     formData.append('prompt', currentPrompt);
-    
+
     try {
         const response = await fetch('/api/analyze', {
             method: 'POST',
             body: formData
         });
-        
+
         if (!response.ok) {
             const errData = await response.json();
             throw new Error(errData.detail || "Server analysis error");
         }
-        
+
         const result = await response.ok ? await response.json() : null;
         if (result) {
             displaySessionResults(result);
@@ -322,23 +322,23 @@ async function uploadAndAnalyze() {
 function displaySessionResults(data) {
     emptyAnalytics.classList.add('hidden');
     resultsView.classList.remove('hidden');
-    
+
     resultsPromptBadge.textContent = data.prompt || "Speaking Practice";
     paceVal.textContent = data.pace;
     durationVal.textContent = data.duration;
     wordsVal.textContent = data.word_count;
     transcriptText.textContent = data.transcript;
-    
+
     // Pace Gauge percentage (balanced is around 110-160 WPM, range map to 0-100%)
     let pacePercentage = (data.pace / 240) * 100;
     pacePercentage = Math.min(Math.max(pacePercentage, 5), 95); // clamp
     paceGaugeFill.style.width = `${pacePercentage}%`;
-    
+
     // Render Filler Words Cloud
     fillerCloud.innerHTML = '';
     const fillers = data.filler_counts || {};
     const fillerKeys = Object.keys(fillers);
-    
+
     if (fillerKeys.length === 0) {
         fillerCloud.innerHTML = '<span class="status-pulse text-sm">None detected</span>';
     } else {
@@ -349,7 +349,7 @@ function displaySessionResults(data) {
             fillerCloud.appendChild(tag);
         });
     }
-    
+
     // Render Self-Corrections
     correctionList.innerHTML = '';
     const corrections = data.corrections || [];
@@ -369,11 +369,11 @@ function displaySessionResults(data) {
             correctionList.appendChild(item);
         });
     }
-    
+
     // Render AI Rephrasing Suggestions
     aiAnalysisContainer.innerHTML = '';
     const aiText = data.ai_repetition_analysis || "";
-    
+
     if (!aiText || aiText.includes("None detected")) {
         aiAnalysisContainer.innerHTML = '<div class="status-pulse text-sm">No rephrasings needed — ideas flowed cleanly.</div>';
     } else {
@@ -381,17 +381,17 @@ function displaySessionResults(data) {
         const lines = aiText.split('\n');
         let currentItem = {};
         const parsedItems = [];
-        
+
         lines.forEach(line => {
             if (line.startsWith('Original:')) {
                 currentItem.original = line.substring(9).trim();
             } else if (line.startsWith('Suggestion:')) {
                 currentItem.suggestion = line.substring(11).trim();
-                parsedItems.push({...currentItem});
+                parsedItems.push({ ...currentItem });
                 currentItem = {};
             }
         });
-        
+
         if (parsedItems.length === 0) {
             // fallback if it printed something custom
             const card = document.createElement('div');
@@ -422,10 +422,10 @@ function displaySessionResults(data) {
             });
         }
     }
-    
+
     // Render Mission & Feedback
     missionText.textContent = data.mission || "Keep practicing speaking with confidence!";
-    
+
     feedbackPoints.innerHTML = '';
     const points = data.feedback || [];
     points.forEach(pt => {
@@ -434,3 +434,68 @@ function displaySessionResults(data) {
         feedbackPoints.appendChild(li);
     });
 }
+
+async function renderProgressChart() {
+    const response = await fetch('/api/history');
+    const data = await response.json();
+    const history = data.history;
+
+    if (!history || history.length === 0) return;
+
+    const labels = history.map((entry, i) => `Session ${i + 1}`);
+    const paces = history.map(entry => entry.pace);
+    const fillerTotals = history.map(entry =>
+        Object.values(entry.filler_counts || {}).reduce((sum, count) => sum + count, 0)
+    );
+    const correctionCounts = history.map(entry => (entry.corrections || []).length);
+
+    const ctx = document.getElementById('progressChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Speaking Pace (WPM)',
+                    data: paces,
+                    borderColor: '#4A90D9',
+                    yAxisID: 'y',
+                    tension: 0.3
+                },
+                {
+                    label: 'Filler Words',
+                    data: fillerTotals,
+                    borderColor: '#E07A5F',
+                    yAxisID: 'y1',
+                    tension: 0.3
+                },
+                {
+                    label: 'Self-Corrections',
+                    data: correctionCounts,
+                    borderColor: '#81B29A',
+                    yAxisID: 'y1',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: 'Words per minute' }
+                },
+                y1: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { display: true, text: 'Count' },
+                    grid: { drawOnChartArea: false }
+                }
+            }
+        }
+    });
+}
+
+renderProgressChart();
