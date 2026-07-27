@@ -14,8 +14,7 @@ recraftt. records your voice, transcribes it in the cloud, and delivers instant,
 - On-screen **countdown timer** tracks the length of each session
 - Recordings are sent securely to the backend as `.webm` audio blobs
 
-<img width="1920" height="957" alt="image" src="https://github.com/user-attachments/assets/d0a031ed-3221-47f0-a288-32f53ff21f79" />
-
+<img width="1894" height="974" alt="image" src="https://github.com/user-attachments/assets/e9d932fd-8038-45dc-83cd-9d308d3ddb7d" />
 
 ### 📝 AI Transcription via Whisper
 - Audio is transcribed using **Whisper Base** model for fast, accurate speech-to-text
@@ -124,7 +123,7 @@ recraftt/
 
 ## 🗿 Thanks To
 
-- Huge shoutout to my friend Anbu Chelvan for mentoring me on this project! He’s an aspiring game dev—go check out his awesome work!- https://www.instagram.com/rozex.studios/
+- Huge shoutout to my friend Anbu Chelvan for mentoring me on this project! He’s an aspiring game dev go check out his awesome work!- https://www.instagram.com/rozex.studios/
 
 ---
 ## 🌐 Check Out The Website
