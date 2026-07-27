@@ -487,15 +487,15 @@ async function renderProgressChart() {
                     labels: {
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        pointRadius: isMobile ? 4 : 6,
-                        padding: isMobile ? 8 : 16
+                        pointRadius: isMobile ? 2 : 2,
+                        padding: isMobile ? 2 : 4
                     }
                 },
                 title: {
                     display: true,
                     text: 'Speaking Progress Over Time',
                     font: {
-                        size: isMobile ? 12 : 16
+                        size: isMobile ? 12 : 12
                     }
                 }
             },
@@ -506,7 +506,7 @@ async function renderProgressChart() {
                     title: { display: true, text: 'Words per minute' },
                     ticks: {
                         font: {
-                            size: isMobile ? 10 : 12
+                            size: isMobile ? 8 : 12
                         }
                     }
                 },
@@ -517,7 +517,7 @@ async function renderProgressChart() {
                     grid: { drawOnChartArea: false },
                     ticks: {
                         font: {
-                            size: isMobile ? 10 : 12
+                            size: isMobile ? 8 : 12
                         }
                     }
                 }
