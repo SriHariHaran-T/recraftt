@@ -434,7 +434,7 @@ function displaySessionResults(data) {
         feedbackPoints.appendChild(li);
     });
 }
-
+const isMobile = window.innerWidth < 600;
 async function renderProgressChart() {
     const response = await fetch('/api/history');
     const data = await response.json();
@@ -481,20 +481,21 @@ async function renderProgressChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     labels: {
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        pointRadius: 6,
-                        padding: 16
+                        pointRadius: isMobile ? 4 : 6,
+                        padding: isMobile ? 8 : 16
                     }
                 },
                 title: {
                     display: true,
                     text: 'Speaking Progress Over Time',
                     font: {
-                        size: 16
+                        size: isMobile ? 12 : 16
                     }
                 }
             },
@@ -502,13 +503,23 @@ async function renderProgressChart() {
                 y: {
                     type: 'linear',
                     position: 'left',
-                    title: { display: true, text: 'Words per minute' }
+                    title: { display: true, text: 'Words per minute' },
+                    ticks: {
+                        font: {
+                            size: isMobile ? 10 : 12
+                        }
+                    }
                 },
                 y1: {
                     type: 'linear',
                     position: 'right',
                     title: { display: true, text: 'Count' },
-                    grid: { drawOnChartArea: false }
+                    grid: { drawOnChartArea: false },
+                    ticks: {
+                        font: {
+                            size: isMobile ? 10 : 12
+                        }
+                    }
                 }
             }
         }

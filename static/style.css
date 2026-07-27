@@ -999,3 +999,18 @@ h3 {
         font-size: 2.25rem;
     }
 }
+
+.chart-card {
+    position: relative;
+    height: 280px;
+}
+
+.chart-card canvas {
+    max-height: 100%;
+}
+
+@media (max-width: 600px) {
+    .chart-card {
+        height: 220px;
+    }
+}
