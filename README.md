@@ -123,7 +123,7 @@ recraftt/
 
 ## 🗿 Thanks To
 
-- Huge shoutout to my friend Anbu Chelvan for mentoring me on this project! He’s an aspiring game dev—go check out his awesome work!- https://www.instagram.com/rozex.studios/
+- Huge shoutout to my friend Anbu Chelvan for mentoring me on this project! He’s an aspiring game dev go check out his awesome work!- https://www.instagram.com/rozex.studios/
 
 ---
 ## 🌐 Check Out The Website
