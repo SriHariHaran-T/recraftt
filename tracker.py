@@ -73,4 +73,4 @@ def delete_session(index: int):
             json.dump(history, f, indent=2)
         return True
 
-    return False
+    return False
