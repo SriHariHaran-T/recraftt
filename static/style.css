@@ -834,7 +834,7 @@ h3 {
     background: rgba(10, 22, 50, 0.5);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
-    padding: 1.15rem;
+    padding: 1.05rem;
     cursor: pointer;
     transition: all 0.22s ease;
     backdrop-filter: blur(10px);
