@@ -1,3 +1,9 @@
+//Supabase integration
+const SUPABASE_URL = "https://lyrtphxopdpnhqhjerbb.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5cnRwaHhvcGRwbmhocWplcmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNTU2NTgsImV4cCI6MjEwMDczMTY1OH0.9ocEPUPhs-F15bPvyyTO8FbwAloqaz9PFWet2PZSejs";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 // State Variables
 let isRecording = false;
 let mediaRecorder = null;
@@ -527,3 +533,22 @@ async function renderProgressChart() {
 }
 
 renderProgressChart();
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google"
+    });
+    if (error) console.error("Login error:", error);
+});
+
+// Check if user is already logged in in when page loads
+async function checkUser() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+        document.getElementById("loginBtn").classList.add("hidden");
+        document.getElementById("userInfo").textContent = `Signed in as ${session.user.email}`;
+        document.getElementById("userInfo").classList.remove("hidden");
+    }
+}
+
+checkUser();
