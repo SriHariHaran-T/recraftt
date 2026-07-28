@@ -546,9 +546,23 @@ async function checkUser() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         document.getElementById("loginBtn").classList.add("hidden");
+        document.getElementById("logoutBtn").classList.remove("hidden");
         document.getElementById("userInfo").textContent = `Signed in as ${session.user.email}`;
         document.getElementById("userInfo").classList.remove("hidden");
+    } else {
+        document.getElementById("loginBtn").classList.remove("hidden");
+        document.getElementById("logoutBtn").classList.add("hidden");
+        document.getElementById("userInfo").classList.add("hidden");
     }
 }
 
 checkUser();
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
+        console.error("Logout error:", error);
+        return;
+    }
+    location.reload();
+});
