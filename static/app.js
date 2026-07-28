@@ -1,5 +1,5 @@
 //Supabase integration
-const SUPABASE_URL = "https://lyrtphxopdpnhhqjerbb.supabase.co/auth/v1/callback";
+const SUPABASE_URL = "https://lyrtphxopdpnhhqjerbb.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5cnRwaHhvcGRwbmhocWplcmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNTU2NTgsImV4cCI6MjEwMDczMTY1OH0.9ocEPUPhs-F15bPvyyTO8FbwAloqaz9PFWet2PZSejs";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
