@@ -544,10 +544,12 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
 // Check if user is already logged in in when page loads
 async function checkUser() {
     const { data: { session } } = await supabaseClient.auth.getSession();
+    let userName;
     if (session) {
+        userName = session.user.user_metadata.name.split(" ")[0];
         document.getElementById("loginBtn").classList.add("hidden");
         document.getElementById("logoutBtn").classList.remove("hidden");
-        document.getElementById("userInfo").textContent = `Signed in as ${session.user.email}`;
+        document.getElementById("userInfo").textContent = `Signed in as ${userName}`;
         document.getElementById("userInfo").classList.remove("hidden");
     } else {
         document.getElementById("loginBtn").classList.remove("hidden");
