@@ -824,7 +824,7 @@ h3 {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
     gap: 1.1rem;
-    max-height: 340px;
+    max-height: 360px;
     overflow-y: auto;
     padding-right: 0.4rem;
 }
@@ -834,7 +834,7 @@ h3 {
     background: rgba(10, 22, 50, 0.5);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
-    padding: 1.05rem;
+    padding: 1.15rem;
     cursor: pointer;
     transition: all 0.22s ease;
     backdrop-filter: blur(10px);
