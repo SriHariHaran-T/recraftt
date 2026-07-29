@@ -1,53 +1,52 @@
-import json
 import os
-from datetime import datetime
+# pyrefly: ignore [missing-import]
+from dotenv import load_dotenv
+from supabase import create_client
 
-HISTORY_FILE = "session_history.json"
+load_dotenv()
 
-def save_session(prompt, text, pace, filler_counts, corrections, ai_result, feedback, mission):
-    session_record = {
-        "date": datetime.now().strftime("%Y-%m-%d"),
-        "time": datetime.now().strftime("%H:%M:%S"),
+supabase = create_client(
+    os.getenv("https://lyrtphxopdpnhhqjerbb.supabase.co"),
+    os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5cnRwaHhvcGRwbmhocWplcmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNTU2NTgsImV4cCI6MjEwMDczMTY1OH0.9ocEPUPhs-F15bPvyyTO8FbwAloqaz9PFWet2PZSejs")
+)
+
+def save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_result, feedback, mission):
+    data = {
+        "user_id": user_id,
         "prompt": prompt,
         "transcript": text,
-        "pace": round(pace, 1),
+        "pace": pace,
         "filler_counts": filler_counts,
         "corrections": corrections,
         "ai_repetition_analysis": ai_result,
         "feedback": feedback,
         "mission": mission,
     }
+    response = supabase.table("session").insert(data).execute()
+    return response
 
-    if os.path.exists(HISTORY_FILE):
-        with open(HISTORY_FILE, "r") as f:
-            history = json.load(f)
-    else:
-        history = []
+def get_history(user_id):
+    response = (
+        supabase.table("session")
+        .select("*")
+        .eq("user_id", user_id)
+        .order("created_at", desc=True)
+        .execute()
+    )
+    return response.data
 
-    history.append(session_record)
-
-    with open(HISTORY_FILE, "w") as f:
-        json.dump(history, f, indent=2)
-
-    print(f"\nSession saved. You now have {len(history)} session(s) recorded.")
-
-
-def get_streak():
-    if not os.path.exists(HISTORY_FILE):
-        return 0
-
-    with open(HISTORY_FILE, "r") as f:
-        history = json.load(f)
-
+def get_streak(user_id):
+    history = get_history(user_id)
     if not history:
         return 0
 
-    dates = sorted(set(entry["date"] for entry in history), reverse=True)
+    from datetime import datetime
+    dates = sorted(set(entry["created_at"][:10] for entry in history), reverse=True)
     streak = 1
     today = datetime.now().date()
 
     if dates[0] != today.strftime("%Y-%m-%d"):
-        return 0  # streak broken if no session today
+        return 0
 
     for i in range(1, len(dates)):
         prev_date = datetime.strptime(dates[i-1], "%Y-%m-%d").date()
@@ -59,18 +58,12 @@ def get_streak():
 
     return streak
 
-
-def delete_session(index: int):
-    if not os.path.exists(HISTORY_FILE):
-        return False
-
-    with open(HISTORY_FILE, "r") as f:
-        history = json.load(f)
-
-    if 0 <= index < len(history):
-        history.pop(index)
-        with open(HISTORY_FILE, "w") as f:
-            json.dump(history, f, indent=2)
-        return True
-
-    return False
+def delete_session(session_id, user_id):
+    response = (
+        supabase.table("session")
+        .delete()
+        .eq("id", session_id)
+        .eq("user_id", user_id)
+        .execute()
+    )
+    return len(response.data) > 0

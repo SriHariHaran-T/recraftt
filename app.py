@@ -1,3 +1,4 @@
+from tracker import get_history
 import os
 import shutil
 import tempfile
@@ -10,6 +11,9 @@ from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 import json
+# pyrefly: ignore [missing-import]
+from fastapi import Request
+import jwt
 
 # Import existing application logic
 from prompts import get_daily_prompt
@@ -162,3 +166,29 @@ async def serve_index():
 
 # Mount static files (CSS, JS, assets). Serves everything under /static path.
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+def get_current_user_id(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
+
+    token = auth_header.split(" ")[1]
+
+    try:
+        payload = jwt.decode(token, options={"verify_signature": False})
+        return payload["sub"]  # "sub" is the user's unique ID inside the token
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@app.delete("/api/history/{index}")
+def api_delete_history(index: int, request: Request):
+    user_id = get_current_user_id(request)
+    try:
+        success = delete_session(index, user_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="Session not found")
+        streak = get_streak(user_id)
+        history = get_history(user_id)
+        return {"message": "Session deleted successfully", "streak": streak, "history": history}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

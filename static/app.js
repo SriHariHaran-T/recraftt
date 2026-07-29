@@ -3,6 +3,11 @@ const SUPABASE_URL = "https://lyrtphxopdpnhhqjerbb.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5cnRwaHhvcGRwbmhocWplcmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNTU2NTgsImV4cCI6MjEwMDczMTY1OH0.9ocEPUPhs-F15bPvyyTO8FbwAloqaz9PFWet2PZSejs";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+async function getAuthHeaders() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return {};
+    return { "Authorization": `Bearer ${session.access_token}` };
+}
 
 // State Variables
 let isRecording = false;
@@ -82,7 +87,8 @@ newPromptBtn.addEventListener('click', fetchPrompt);
 // Fetch History and Streaks
 async function fetchHistoryAndStreak() {
     try {
-        const response = await fetch('/api/history');
+        const headers = await getAuthHeaders();
+        const response = await fetch('/api/history', { headers });
         const data = await response.json();
 
         // Update streak
@@ -153,8 +159,10 @@ function renderHistoryList(history) {
 // Delete session item by API
 async function deleteSessionItem(index) {
     try {
+        const headers = await getAuthHeaders();
         const response = await fetch(`/api/history/${index}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers
         });
         if (response.ok) {
             const data = await response.json();
@@ -299,8 +307,10 @@ async function uploadAndAnalyze() {
     formData.append('prompt', currentPrompt);
 
     try {
+        const headers = await getAuthHeaders();
         const response = await fetch('/api/analyze', {
             method: 'POST',
+            headers,
             body: formData
         });
 
@@ -568,3 +578,9 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     }
     location.reload();
 });
+
+async function getAuthHeaders() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return {};
+    return { "Authorization": `Bearer ${session.access_token}` };
+}
