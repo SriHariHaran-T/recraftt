@@ -6,10 +6,9 @@ from supabase import create_client
 load_dotenv()
 
 supabase = create_client(
-    os.getenv("https://lyrtphxopdpnhhqjerbb.supabase.co"),
-    os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5cnRwaHhvcGRwbmhocWplcmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxNTU2NTgsImV4cCI6MjEwMDczMTY1OH0.9ocEPUPhs-F15bPvyyTO8FbwAloqaz9PFWet2PZSejs")
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_ANON_KEY")
 )
-
 def save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_result, feedback, mission):
     data = {
         "user_id": user_id,
