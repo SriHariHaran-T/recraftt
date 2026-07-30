@@ -15,7 +15,7 @@ def calculate_pace(text, segments):
         return 0, word_count, 0
 
     duration_minutes = total_duration / 60
-    pace = word_count / duration_minutes
+    pace = round(word_count / duration_minutes, 1)
     return pace, word_count, total_duration
 
 def detect_fillers(text):
