@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import json
 # pyrefly: ignore [missing-import]
-from fastapi import Request
+from fastapi import Request, Form
 import jwt
 
 # Import existing application logic
@@ -48,25 +48,25 @@ def api_get_prompt():
 
 @app.get("/api/history")
 def api_get_history(request: Request):
-    user_id = get_current_user_id(request)
+    user_id, token = get_current_user_id(request)
     try:
-        streak = get_streak(user_id)
-        history = get_history(user_id)
+        streak = get_streak(user_id, token)
+        history = get_history(user_id, token)
         return {"streak": streak, "history": history}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/api/history/{index}")
 def api_delete_history(index: int, request: Request):
-    user_id = get_current_user_id(request)  
+    user_id, token = get_current_user_id(request)  
     """Delete a specific session entry by index."""
     try:
-        success = delete_session(index, user_id)
+        success = delete_session(index, user_id, token)
         if not success:
             raise HTTPException(status_code=404, detail="Session not found")
         
-        streak = get_streak(user_id)
-        history = get_history(user_id)
+        streak = get_streak(user_id, token)
+        history = get_history(user_id, token)
         return {
             "message": "Session deleted successfully",
             "streak": streak,
@@ -77,8 +77,9 @@ def api_delete_history(index: int, request: Request):
 
 @app.post("/api/analyze")
 async def api_analyze_audio(
+    request: Request,
     file: UploadFile = File(...),
-    prompt: str = "Daily Practice"
+    prompt: str = Form("Daily Practice")
 ):
     """Receive audio from browser, transcribe, analyze, and save session."""
     try:
@@ -112,11 +113,13 @@ async def api_analyze_audio(
             # 4. Generate feedback
             feedback, mission = generate_feedback(pace, filler_counts, corrections)
 
+            user_id, token = get_current_user_id(request)
+            
             # 5. Save the session using existing tracker
-            save_session(prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission)
+            save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission, token)
             
             # 6. Get updated streak
-            streak = get_streak()
+            streak = get_streak(user_id, token)
 
             return {
                 "transcript": text,
@@ -168,19 +171,19 @@ def get_current_user_id(request: Request):
 
     try:
         payload = jwt.decode(token, options={"verify_signature": False})
-        return payload["sub"]  # "sub" is the user's unique ID inside the token
+        return payload["sub"], token  # Return both user_id and token
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-@app.delete("/api/history/{index}")
-def api_delete_history(index: int, request: Request):
-    user_id = get_current_user_id(request)
+@app.delete("/api/history_duplicate/{index}")
+def api_delete_history_duplicate(index: int, request: Request):
+    user_id, token = get_current_user_id(request)
     try:
-        success = delete_session(index, user_id)
+        success = delete_session(index, user_id, token)
         if not success:
             raise HTTPException(status_code=404, detail="Session not found")
-        streak = get_streak(user_id)
-        history = get_history(user_id)
+        streak = get_streak(user_id, token)
+        history = get_history(user_id, token)
         return {"message": "Session deleted successfully", "streak": streak, "history": history}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
