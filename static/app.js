@@ -110,7 +110,7 @@ function renderHistoryList(history) {
         return;
     }
 
-    // Show newer sessions first while keeping track of original index
+
     const sortedHistory = history.map((session, index) => ({ session, index })).reverse();
 
     sortedHistory.forEach(({ session, index }) => {
@@ -121,7 +121,7 @@ function renderHistoryList(history) {
 
         card.innerHTML = `
             <div class="history-meta">
-                <span>${session.date} • ${session.time}</span>
+                <span>${new Date(session.created_at).toLocaleDateString()} • ${new Date(session.created_at).toLocaleTimeString()}</span>
                 <button class="delete-session-btn" title="Delete Session">
                     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="3 6 5 6 21 6"></polyline>
