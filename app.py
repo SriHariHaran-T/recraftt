@@ -363,4 +363,3 @@ def api_delete_history_duplicate(index: int, request: Request):
         return {"message": "Session deleted successfully", "streak": streak, "history": history}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
->>>>>>> 3dd0c9133d2fd4d095c08bd90432ed1537a64348
