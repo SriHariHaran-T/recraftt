@@ -212,7 +212,7 @@ async def api_analyze_audio_v2(
                     content={"detail": "No speech detected. Please speak clearly into your mic."}
                 )
 
-            # ✅ NEW: Check relevance first
+            # NEW: Check relevance first
             relevance_result = check_relevance(prompt, text)
             if not is_relevant(relevance_result):
                 return JSONResponse(

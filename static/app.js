@@ -308,7 +308,7 @@ async function uploadAndAnalyze() {
 
     try {
         const headers = await getAuthHeaders();
-        const response = await fetch('/api/analyze', {
+        const response = await fetch('/api/analyze-audio', {
             method: 'POST',
             headers,
             body: formData
