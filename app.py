@@ -22,6 +22,7 @@ from analyzer import calculate_pace, detect_fillers, detect_corrections
 from feedback import generate_feedback
 from ai_analyzer import detect_repetition_ai
 from tracker import save_session, get_streak, delete_session, get_history
+from ai_analyzer import detect_repetition_ai, check_relevance, is_relevant
 
 app = FastAPI(title="recraftt. Speech Analyzer API")
 
@@ -185,5 +186,77 @@ def api_delete_history_duplicate(index: int, request: Request):
         streak = get_streak(user_id, token)
         history = get_history(user_id, token)
         return {"message": "Session deleted successfully", "streak": streak, "history": history}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/analyze-audio")
+async def api_analyze_audio_v2(
+    request: Request,
+    file: UploadFile = File(...),
+    prompt: str = Form("Daily Practice")
+):
+    try:
+        # Create temp file (same as before)
+        suffix = os.path.splitext(file.filename)[1] if file.filename else ".webm"
+        if not suffix:
+            suffix = ".webm"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_file:
+            shutil.copyfileobj(file.file, temp_file)
+            temp_path = temp_file.name
+
+        try:
+            text, segments = transcribe_audio(temp_path)
+            if not text.strip():
+                return JSONResponse(
+                    status_code=400,
+                    content={"detail": "No speech detected. Please speak clearly into your mic."}
+                )
+
+            # ✅ NEW: Check relevance first
+            relevance_result = check_relevance(prompt, text)
+            if not is_relevant(relevance_result):
+                return JSONResponse(
+                    status_code=400,
+                    content={
+                        "detail": "Response is not relevant to the prompt. Try again!",
+                        "relevance_analysis": relevance_result
+                    }
+                )
+
+            # AI repetition analysis
+            ai_repetition_result = detect_repetition_ai(text)
+
+            # Standard metrics
+            pace, word_count, duration = calculate_pace(text, segments)
+            filler_counts = detect_fillers(text)
+            corrections = detect_corrections(text)
+
+            # Generate feedback
+            feedback, mission = generate_feedback(pace, filler_counts, corrections)
+
+            # Save session
+            user_id, token = get_current_user_id(request)
+            save_session(
+                user_id, prompt, text, pace, filler_counts, corrections,
+                ai_repetition_result, feedback, mission, token
+            )
+
+            streak = get_streak(user_id, token)
+
+            return {
+                "transcript": text,
+                "pace": round(pace, 1),
+                "duration": round(duration, 1),
+                "word_count": word_count,
+                "filler_counts": filler_counts,
+                "corrections": corrections,
+                "ai_repetition_analysis": ai_repetition_result,
+                "feedback": feedback,
+                "mission": mission,
+                "streak": streak
+            }
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
