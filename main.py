@@ -54,7 +54,7 @@ from tracker import save_session, get_streak
 
 # ... after generating feedback and mission ...
 
-save_session(prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission)
+save_session("cli_user", prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission)
 
-streak = get_streak()
+streak = get_streak("cli_user")
 print(f"Current streak: {streak} day(s)")
