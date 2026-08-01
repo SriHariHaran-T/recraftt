@@ -160,8 +160,7 @@ async def serve_index():
         },
     )
 
-# Mount static files (CSS, JS, assets). Serves everything under /static path.
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 
 def get_current_user_id(request: Request):
     auth_header = request.headers.get("Authorization")
@@ -260,3 +259,6 @@ async def api_analyze_audio_v2(
                 os.remove(temp_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Mount static files (CSS, JS, assets). Serves everything under /static path.
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
