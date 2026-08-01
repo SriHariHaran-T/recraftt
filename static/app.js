@@ -142,7 +142,7 @@ function renderHistoryList(history) {
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // prevent card click
             if (confirm("Delete this session record?")) {
-                deleteSessionItem(index);
+                deleteSessionItem(session.id);
             }
         });
 
@@ -157,10 +157,10 @@ function renderHistoryList(history) {
 }
 
 // Delete session item by API
-async function deleteSessionItem(index) {
+async function deleteSessionItem(sessionId) {
     try {
         const headers = await getAuthHeaders();
-        const response = await fetch(`/api/history/${index}`, {
+        const response = await fetch(`/api/history/${sessionId}`, {
             method: 'DELETE',
             headers
         });

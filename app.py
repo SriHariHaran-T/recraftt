@@ -56,12 +56,12 @@ def api_get_history(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.delete("/api/history/{index}")
-def api_delete_history(index: int, request: Request):
+@app.delete("/api/history/{session_id}")
+def api_delete_history(session_id: str, request: Request):
     user_id = get_current_user_id(request)  
     """Delete a specific session entry by index."""
     try:
-        success = delete_session(index, user_id)
+        success = delete_session(session_id, user_id)
         if not success:
             raise HTTPException(status_code=404, detail="Session not found")
         
@@ -171,16 +171,4 @@ def get_current_user_id(request: Request):
         return payload["sub"]  # "sub" is the user's unique ID inside the token
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
-
-@app.delete("/api/history/{index}")
-def api_delete_history(index: int, request: Request):
-    user_id = get_current_user_id(request)
-    try:
-        success = delete_session(index, user_id)
-        if not success:
-            raise HTTPException(status_code=404, detail="Session not found")
-        streak = get_streak(user_id)
-        history = get_history(user_id)
-        return {"message": "Session deleted successfully", "streak": streak, "history": history}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+

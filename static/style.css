@@ -826,6 +826,9 @@ h3 {
     gap: 1.1rem;
     max-height: 360px;
     overflow-y: auto;
+    padding-top: 6px;
+    padding-bottom: 12px;
+    padding-left: 4px;
     padding-right: 0.4rem;
 }
 
