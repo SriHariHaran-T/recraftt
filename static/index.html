@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>recraftt.</title>
     <meta name="description"
-        content="recraftt. - A premium speech analysis dashboard to practice speaking, track pacing, detect filler words, and get AI rephrasing suggestions.">
+        content="recraftt. - A speech analysis dashboard to practice speaking, track pacing, detect filler words, and get AI rephrasing suggestions.">
     <!-- Favicon — matches the logo-icon: blue gradient rounded square + white mic -->
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234da8ff'/%3E%3Cstop offset='100%25' stop-color='%2363b3ed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 7a2.5 2.5 0 0 0-2.5 2.5v5a2.5 2.5 0 0 0 5 0v-5A2.5 2.5 0 0 0 16 7Z'/%3E%3Cpath d='M21.5 14.5v1a5.5 5.5 0 0 1-11 0v-1'/%3E%3Cline x1='16' y1='21' x2='16' y2='25'/%3E%3Cline x1='13' y1='25' x2='19' y2='25'/%3E%3C/g%3E%3C/svg%3E">
@@ -24,192 +24,218 @@
 <body>
     <div class="glass-bg"></div>
 
-    <header class="app-header">
-        <div class="auth-controls">
-            <button id="loginBtn" class="btn btn-secondary">Sign in with Google</button>
-            <span id="userInfo" class="hidden"></span>
-            <button id="logoutBtn" class="btn btn-secondary hidden">Sign Out</button>
-        </div>
-        <div class="logo-area">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                    <line x1="12" x2="12" y1="19" y2="22"></line>
-                </svg>
-            </div>
-            <h1>recraftt<span>.</span></h1>
-        </div>
-
-        <div class="streak-badge" id="streakBadge">
-            <svg class="fire-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"></path>
-                <path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" fill="none" stroke="currentColor" stroke-width="2"></path>
-            </svg>
-            <span id="streakCount">0</span> Day Streak
-        </div>
-    </header>
-
-    <main class="dashboard-grid">
-        <!-- Left Side: Interactive Area -->
-        <section class="control-panel">
-            <!-- Prompt Card -->
-            <div class="card prompt-card">
-                <div class="card-header">
-                    <h2>Daily Speaking Prompt</h2>
-                    <button class="btn btn-secondary btn-icon" id="newPromptBtn" title="Get New Prompt">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div class="prompt-content">
-                    <p id="promptText">Loading prompt...</p>
-                </div>
-            </div>
-
-            <!-- Recorder Card -->
-            <div class="card recorder-card">
-                <div class="card-header">
-                    <h2>Voice Recorder</h2>
-                </div>
-                <div class="recorder-body">
-                    <div class="timer" id="recordingTimer">00:00</div>
-
-                    <div class="waveform-container">
-                        <canvas id="waveformCanvas"></canvas>
-                        <div class="status-pulse" id="recordStatusText">Click below to start practicing</div>
-                    </div>
-
-                    <div class="recorder-controls">
-                        <button class="record-btn" id="recordBtn">
-                            <div class="record-btn-inner"></div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Right Side: Analytics & Feedback -->
-        <section class="analytics-panel">
-            <!-- Default Placeholder / Empty State -->
-            <div class="empty-state" id="emptyAnalytics">
-                <div class="empty-icon">
-                    <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor"
-                        stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    <div id="loginContainer" class="login-view hidden">
+        <div class="card login-card">
+            <div class="logo-area login-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" x2="12" y1="19" y2="22"></line>
                     </svg>
                 </div>
-                <h3>No Session Data Yet</h3>
-                <p>Complete a speaking prompt to see your pace, filler word frequency, and AI-powered recommendations.
-                </p>
+                <h1>recraftt<span>.</span></h1>
+            </div>
+            <p class="login-subtitle">A premium speech analysis dashboard to practice speaking, track pacing, detect
+                filler words, and get AI rephrasing suggestions.</p>
+            <button class="btn login-main-btn google-login-btn">
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <div id="appContainer" class="hidden">
+        <header class="app-header">
+            <div class="auth-controls">
+                <button class="btn btn-secondary google-login-btn" id="headerLoginBtn">Sign in with Google</button>
+                <span id="userInfo" class="hidden"></span>
+                <button id="logoutBtn" class="btn btn-secondary hidden">Sign Out</button>
+            </div>
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" x2="12" y1="19" y2="22"></line>
+                    </svg>
+                </div>
+                <h1>recraftt<span>.</span></h1>
             </div>
 
-            <!-- Results View (Hidden by default) -->
-            <div class="results-view hidden" id="resultsView">
-                <div class="card feedback-card">
+            <div class="streak-badge" id="streakBadge">
+                <svg class="fire-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z">
+                    </path>
+                    <path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" fill="none" stroke="currentColor" stroke-width="2">
+                    </path>
+                </svg>
+                <span id="streakCount">0</span> Day Streak
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Left Side: Interactive Area -->
+            <section class="control-panel">
+                <!-- Prompt Card -->
+                <div class="card prompt-card">
                     <div class="card-header">
-                        <h2>Analysis Results</h2>
-                        <span class="badge" id="resultsPromptBadge">Daily Practice</span>
+                        <h2>Daily Speaking Prompt</h2>
+                        <button class="btn btn-secondary btn-icon" id="newPromptBtn" title="Get New Prompt">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                            </svg>
+                        </button>
                     </div>
+                    <div class="prompt-content">
+                        <p id="promptText">Loading prompt...</p>
+                    </div>
+                </div>
 
-                    <!-- Metrics Grid -->
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <span class="metric-label">Speaking Pace</span>
-                            <div class="metric-val-container">
-                                <span class="metric-value" id="paceVal">0</span>
-                                <span class="metric-unit">WPM</span>
-                            </div>
-                            <div class="pace-gauge-wrapper">
-                                <div class="pace-gauge-track">
-                                    <div class="pace-gauge-fill" id="paceGaugeFill"></div>
-                                </div>
-                                <div class="pace-labels">
-                                    <span>Slow</span>
-                                    <span>Balanced</span>
-                                    <span>Fast</span>
-                                </div>
-                            </div>
+                <!-- Recorder Card -->
+                <div class="card recorder-card">
+                    <div class="card-header">
+                        <h2>Voice Recorder</h2>
+                    </div>
+                    <div class="recorder-body">
+                        <div class="timer" id="recordingTimer">00:00</div>
+
+                        <div class="waveform-container">
+                            <canvas id="waveformCanvas"></canvas>
+                            <div class="status-pulse" id="recordStatusText">Click below to start practicing</div>
                         </div>
 
-                        <div class="metric-card">
-                            <span class="metric-label">Duration</span>
-                            <div class="metric-val-container">
-                                <span class="metric-value" id="durationVal">0</span>
-                                <span class="metric-unit">Sec</span>
-                            </div>
-                        </div>
-
-                        <div class="metric-card">
-                            <span class="metric-label">Total Words</span>
-                            <div class="metric-val-container">
-                                <span class="metric-value" id="wordsVal">0</span>
-                                <span class="metric-unit">Words</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Transcript Box -->
-                    <div class="section-title">Transcript</div>
-                    <div class="transcript-box">
-                        <p id="transcriptText"></p>
-                    </div>
-
-                    <!-- Filler Words & Corrections -->
-                    <div class="details-grid">
-                        <div class="detail-block">
-                            <div class="section-title">Filler Words</div>
-                            <div class="filler-cloud" id="fillerCloud">
-                                <!-- Dynamic tags go here -->
-                            </div>
-                        </div>
-                        <div class="detail-block">
-                            <div class="section-title">Self-Corrections</div>
-                            <ul class="correction-list" id="correctionList">
-                                <!-- Dynamic items go here -->
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- AI Repetition Rephraser -->
-                    <div class="section-title mt-4">AI Rephrasing Suggestions</div>
-                    <div id="aiAnalysisContainer">
-                        <!-- Dynamic AI Suggestions -->
-                    </div>
-
-                    <!-- Actionable Recommendations & Mission -->
-                    <div class="mission-section">
-                        <div class="mission-title">Mission for Tomorrow</div>
-                        <p class="mission-text" id="missionText"></p>
-
-                        <div class="feedback-points-wrapper">
-                            <div class="section-title text-sm">Key Takeaways</div>
-                            <ul class="feedback-points" id="feedbackPoints">
-                                <!-- Takeaway points -->
-                            </ul>
+                        <div class="recorder-controls">
+                            <button class="record-btn" id="recordBtn">
+                                <div class="record-btn-inner"></div>
+                            </button>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Right Side: Analytics & Feedback -->
+            <section class="analytics-panel">
+                <!-- Default Placeholder / Empty State -->
+                <div class="empty-state" id="emptyAnalytics">
+                    <div class="empty-icon">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h3>No Session Data Yet</h3>
+                    <p>Complete a speaking prompt to see your pace, filler word frequency, and AI-powered
+                        recommendations.
+                    </p>
+                </div>
+
+                <!-- Results View (Hidden by default) -->
+                <div class="results-view hidden" id="resultsView">
+                    <div class="card feedback-card">
+                        <div class="card-header">
+                            <h2>Analysis Results</h2>
+                            <span class="badge" id="resultsPromptBadge">Daily Practice</span>
+                        </div>
+
+                        <!-- Metrics Grid -->
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <span class="metric-label">Speaking Pace</span>
+                                <div class="metric-val-container">
+                                    <span class="metric-value" id="paceVal">0</span>
+                                    <span class="metric-unit">WPM</span>
+                                </div>
+                                <div class="pace-gauge-wrapper">
+                                    <div class="pace-gauge-track">
+                                        <div class="pace-gauge-fill" id="paceGaugeFill"></div>
+                                    </div>
+                                    <div class="pace-labels">
+                                        <span>Slow</span>
+                                        <span>Balanced</span>
+                                        <span>Fast</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <span class="metric-label">Duration</span>
+                                <div class="metric-val-container">
+                                    <span class="metric-value" id="durationVal">0</span>
+                                    <span class="metric-unit">Sec</span>
+                                </div>
+                            </div>
+
+                            <div class="metric-card">
+                                <span class="metric-label">Total Words</span>
+                                <div class="metric-val-container">
+                                    <span class="metric-value" id="wordsVal">0</span>
+                                    <span class="metric-unit">Words</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Transcript Box -->
+                        <div class="section-title">Transcript</div>
+                        <div class="transcript-box">
+                            <p id="transcriptText"></p>
+                        </div>
+
+                        <!-- Filler Words & Corrections -->
+                        <div class="details-grid">
+                            <div class="detail-block">
+                                <div class="section-title">Filler Words</div>
+                                <div class="filler-cloud" id="fillerCloud">
+                                    <!-- Dynamic tags go here -->
+                                </div>
+                            </div>
+                            <div class="detail-block">
+                                <div class="section-title">Self-Corrections</div>
+                                <ul class="correction-list" id="correctionList">
+                                    <!-- Dynamic items go here -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- AI Repetition Rephraser -->
+                        <div class="section-title mt-4">AI Rephrasing Suggestions</div>
+                        <div id="aiAnalysisContainer">
+                            <!-- Dynamic AI Suggestions -->
+                        </div>
+
+                        <!-- Actionable Recommendations & Mission -->
+                        <div class="mission-section">
+                            <div class="mission-title">Mission for Tomorrow</div>
+                            <p class="mission-text" id="missionText"></p>
+
+                            <div class="feedback-points-wrapper">
+                                <div class="section-title text-sm">Key Takeaways</div>
+                                <ul class="feedback-points" id="feedbackPoints">
+                                    <!-- Takeaway points -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- History Footer/Sidebar Section -->
+        <section class="history-section">
+            <div class="section-header-row">
+                <h2>Session History</h2>
+            </div>
+
+            <div class="history-list" id="historyList">
+                <!-- Historical cards go here -->
+
             </div>
         </section>
-    </main>
-
-    <!-- History Footer/Sidebar Section -->
-    <section class="history-section">
-        <div class="section-header-row">
-            <h2>Session History</h2>
-        </div>
-
-        <div class="history-list" id="historyList">
-            <!-- Historical cards go here -->
-
-        </div>
-    </section>
+    </div>
 
     <!-- Loading Modal -->
     <div class="modal-overlay hidden" id="loadingModal">

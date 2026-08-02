@@ -63,8 +63,6 @@ function resizeCanvas() {
 
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
-    fetchPrompt();
-    fetchHistoryAndStreak();
     drawStaticWaveform();
 });
 
@@ -544,27 +542,56 @@ async function renderProgressChart() {
 
 renderProgressChart();
 
-document.getElementById("loginBtn").addEventListener("click", async () => {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: "google"
+// Login Button Handlers
+document.querySelectorAll(".google-login-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: "google"
+        });
+        if (error) console.error("Login error:", error);
     });
-    if (error) console.error("Login error:", error);
 });
 
 // Check if user is already logged in in when page loads
 async function checkUser() {
+    const loginMainBtn = document.querySelector(".login-main-btn");
+    if (loginMainBtn) {
+        loginMainBtn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:8px;border-top-color:#fff;"></div> Preparing dashboard...';
+        loginMainBtn.style.pointerEvents = "none";
+        loginMainBtn.style.opacity = "0.8";
+    }
+
     const { data: { session } } = await supabaseClient.auth.getSession();
     let userName;
     if (session) {
         userName = session.user.user_metadata.name.split(" ")[0];
-        document.getElementById("loginBtn").classList.add("hidden");
+        document.getElementById("headerLoginBtn").classList.add("hidden");
         document.getElementById("logoutBtn").classList.remove("hidden");
         document.getElementById("userInfo").textContent = `Signed in as ${userName}`;
         document.getElementById("userInfo").classList.remove("hidden");
+        
+        await Promise.all([
+            fetchPrompt(),
+            fetchHistoryAndStreak(),
+            renderProgressChart()
+        ]);
+        
+        document.getElementById("loginContainer").classList.add("hidden");
+        document.getElementById("appContainer").classList.remove("hidden");
+        
     } else {
-        document.getElementById("loginBtn").classList.remove("hidden");
+        if (loginMainBtn) {
+            loginMainBtn.innerHTML = 'Sign in with Google';
+            loginMainBtn.style.pointerEvents = "auto";
+            loginMainBtn.style.opacity = "1";
+        }
+
+        document.getElementById("headerLoginBtn").classList.remove("hidden");
         document.getElementById("logoutBtn").classList.add("hidden");
         document.getElementById("userInfo").classList.add("hidden");
+        
+        document.getElementById("loginContainer").classList.remove("hidden");
+        document.getElementById("appContainer").classList.add("hidden");
     }
 }
 
@@ -576,7 +603,8 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
         console.error("Logout error:", error);
         return;
     }
-    location.reload();
+    // Smoothly return to sign-in page without full page reload
+    checkUser();
 });
 
 async function getAuthHeaders() {
