@@ -569,16 +569,16 @@ async function checkUser() {
         document.getElementById("logoutBtn").classList.remove("hidden");
         document.getElementById("userInfo").textContent = `Signed in as ${userName}`;
         document.getElementById("userInfo").classList.remove("hidden");
-        
+
         await Promise.all([
             fetchPrompt(),
             fetchHistoryAndStreak(),
             renderProgressChart()
         ]);
-        
+
         document.getElementById("loginContainer").classList.add("hidden");
         document.getElementById("appContainer").classList.remove("hidden");
-        
+
     } else {
         if (loginMainBtn) {
             loginMainBtn.innerHTML = 'Sign in with Google';
@@ -589,7 +589,7 @@ async function checkUser() {
         document.getElementById("headerLoginBtn").classList.remove("hidden");
         document.getElementById("logoutBtn").classList.add("hidden");
         document.getElementById("userInfo").classList.add("hidden");
-        
+
         document.getElementById("loginContainer").classList.remove("hidden");
         document.getElementById("appContainer").classList.add("hidden");
     }
