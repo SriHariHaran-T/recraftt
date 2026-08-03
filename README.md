@@ -1,4 +1,4 @@
-# recraftt. 🎙️
+# recraftt.
 
 > **AI-powered speech practice & analysis dashboard — built to help you speak with more clarity, confidence, and control.**
 
@@ -71,10 +71,9 @@ After every session, you get an instant breakdown:
 - Resets to zero if you skip a day - keep the streak alive!
 
 ### 📂 Session History
-- Every session is auto-saved to a local JSON history file
+- Every session is auto-saved to Supabase database
 - The **Session History** panel shows all past sessions: date, prompt, pace, and feedback
 - Individual sessions can be **deleted** from the UI
-- History persists across app restarts - no database required
 
 <img width="1214" height="243" alt="image" src="https://github.com/user-attachments/assets/6e9f67d8-1d9b-4770-9aae-17251d36f7e8" />
 
@@ -108,14 +107,14 @@ recraftt/
 | **AI / NLP** | Groq API - Llama 3.3 70B (rephrasing analysis) |
 | **Frontend** | Vanilla HTML · CSS · JavaScript |
 | **Design** | Glassmorphism · Playfair Display · Canvas API |
-| **Storage** | Local JSON file (no external database) |
+| **Storage** | Supabase database |
 
 ---
 
 ## 🗺️ Roadmap
 
+- [✔] User authentication & cloud sync
 - [ ] Progress charts over time (pace trends, filler word reduction)
-- [ ] User authentication & cloud sync
 - [ ] Custom prompt categories (job interviews, public speaking, storytelling)
 - [ ] Pronunciation scoring
 
