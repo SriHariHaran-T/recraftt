@@ -1125,3 +1125,24 @@ h3 {
         height: 220px;
     }
 }
+
+.close-session-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-session-btn:hover {
+    color: var(--red);
+    background: rgba(239, 68, 68, 0.12);
+}

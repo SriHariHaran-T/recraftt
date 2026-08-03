@@ -49,6 +49,7 @@ const aiAnalysisContainer = document.getElementById('aiAnalysisContainer');
 const missionText = document.getElementById('missionText');
 const feedbackPoints = document.getElementById('feedbackPoints');
 const historyList = document.getElementById('historyList');
+const closeSessionBtn = document.getElementById('closeSessionBtn');
 
 // Canvas Setup
 const canvasCtx = waveformCanvas.getContext('2d');
@@ -64,6 +65,12 @@ function resizeCanvas() {
 // Initial Load
 document.addEventListener('DOMContentLoaded', () => {
     drawStaticWaveform();
+});
+
+// Close Session Button
+closeSessionBtn.addEventListener('click', () => {
+    resultsView.classList.add('hidden');
+    emptyAnalytics.classList.remove('hidden');
 });
 
 // Fetch Speaking Prompt
