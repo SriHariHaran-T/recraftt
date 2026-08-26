@@ -11,7 +11,7 @@ def get_client(token: str = None):
     if token:
         return create_client(url, key, options=ClientOptions(headers={'Authorization': f'Bearer {token}'}))
     return create_client(url, key)
-def save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_result, feedback, mission, token=None):
+def save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_result, feedback, mission, token=None, duration=None, total_words=None):
     data = {
         "user_id": user_id,
         "prompt": prompt,
@@ -22,6 +22,8 @@ def save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_res
         "ai_repetition_analysis": ai_result,
         "feedback": feedback,
         "mission": mission,
+        "duration": duration,
+        "total_words": total_words,
     }
     client = get_client(token)
     response = client.table("session").insert(data).execute()

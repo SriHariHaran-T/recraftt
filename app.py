@@ -117,7 +117,7 @@ async def api_analyze_audio(
             user_id, token = get_current_user_id(request)
             
             # 5. Save the session using existing tracker
-            save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission, token)
+            save_session(user_id, prompt, text, pace, filler_counts, corrections, ai_repetition_result, feedback, mission, token, duration=round(duration, 1), total_words=word_count)
             
             # 6. Get updated streak
             streak = get_streak(user_id, token)
@@ -126,7 +126,7 @@ async def api_analyze_audio(
                 "transcript": text,
                 "pace": round(pace, 1),
                 "duration": round(duration, 1),
-                "word_count": word_count,
+                "total_words": word_count,
                 "filler_counts": filler_counts,
                 "corrections": corrections,
                 "ai_repetition_analysis": ai_repetition_result,
@@ -237,7 +237,8 @@ async def api_analyze_audio_v2(
             user_id, token = get_current_user_id(request)
             save_session(
                 user_id, prompt, text, pace, filler_counts, corrections,
-                ai_repetition_result, feedback, mission, token
+                ai_repetition_result, feedback, mission, token,
+                duration=round(duration, 1), total_words=word_count
             )
 
             streak = get_streak(user_id, token)
@@ -246,7 +247,7 @@ async def api_analyze_audio_v2(
                 "transcript": text,
                 "pace": round(pace, 1),
                 "duration": round(duration, 1),
-                "word_count": word_count,
+                "total_words": word_count,
                 "filler_counts": filler_counts,
                 "corrections": corrections,
                 "ai_repetition_analysis": ai_repetition_result,

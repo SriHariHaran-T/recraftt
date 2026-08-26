@@ -40,7 +40,7 @@ If none are found, respond with exactly: "None detected."
 Keep your response concise — no extra explanation, no preamble."""
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3
     )
@@ -62,7 +62,7 @@ Reason: <one short sentence explaining why>
 Be lenient with loose or creative interpretations — only mark "No" if the response clearly does not engage with the prompt's topic at all."""
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": relevance_prompt}],
         temperature=0.2
     )

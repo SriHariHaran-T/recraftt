@@ -347,7 +347,7 @@ function displaySessionResults(data) {
     resultsPromptBadge.textContent = data.prompt || "Speaking Practice";
     paceVal.textContent = data.pace;
     durationVal.textContent = data.duration;
-    wordsVal.textContent = data.word_count;
+    wordsVal.textContent = data.total_words;
     transcriptText.textContent = data.transcript;
 
     // Pace Gauge percentage (balanced is around 110-160 WPM, range map to 0-100%)
