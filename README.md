@@ -17,7 +17,7 @@ recraftt. records your voice, transcribes it in the cloud, and delivers instant,
 <img width="1894" height="974" alt="image" src="https://github.com/user-attachments/assets/e9d932fd-8038-45dc-83cd-9d308d3ddb7d" />
 
 ### 📝 AI Transcription via Whisper
-- Audio is transcribed using **Whisper Base** model for fast, accurate speech-to-text
+- Audio is transcribed using **Groq's Whisper Large V3** model for fast, accurate speech-to-text
 - Returns word-level segments used to compute precise timing metrics
 - Gracefully handles silence alerts you if no speech is detected
 
@@ -45,8 +45,8 @@ After every session, you get an instant breakdown:
 - Automatically flags self-correction phrases: *"I meant"*, *"let me rephrase"*, *"what I meant was"*, *"sorry"*, and more
 - Shows the list of detected corrections so you can see exactly where you stumbled
 
-### 🤖 AI Rephrasing Suggestions (Llama 3.3 70B)
-- Powered by **Groq's Llama-3.3-70b-versatile** model via the OpenAI-compatible API
+### 🤖 AI Rephrasing Suggestions (GPT-OSS-120B)
+- Powered by **Groq's GPT-OSS-120B** model via the OpenAI-compatible API
 - Identifies broken phrasing, restarts, and stutters in your transcript
 - For each issue found, provides:
   - **Original** - what you actually said
@@ -85,9 +85,9 @@ After every session, you get an instant breakdown:
 ```
 recraftt/
 ├── app.py              # FastAPI backend — REST API routes
-├── transcriber.py      # Whisper transcription
+├── transcriber.py      # Groq Whisper Large V3 transcription
 ├── analyzer.py         # Pace, filler word & correction detection
-├── ai_analyzer.py      # Groq Llama AI rephrasing suggestions
+├── ai_analyzer.py      # Groq GPT-OSS-120B rephrasing suggestions
 ├── feedback.py         # Rule-based feedback & mission generator
 ├── prompts.py          # Daily speaking prompt bank (30+ prompts)
 ├── tracker.py          # Session persistence & streak calculation
@@ -103,8 +103,8 @@ recraftt/
 | Layer | Technology |
 |---|---|
 | **Backend** | Python · FastAPI · Uvicorn |
-| **AI / STT** | Whisper Large v3 (transcription) |
-| **AI / NLP** | Groq API - Llama 3.3 70B (rephrasing analysis) |
+| **AI / STT** | Groq's Whisper Large v3 (transcription) |
+| **AI / NLP** | Groq's GPT-OSS-120B (rephrasing analysis) |
 | **Frontend** | Vanilla HTML · CSS · JavaScript |
 | **Design** | Glassmorphism · Playfair Display · Canvas API |
 | **Storage** | Supabase database |
