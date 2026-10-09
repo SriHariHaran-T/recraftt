@@ -1,141 +1,406 @@
 # recraftt.
 
-> **AI-powered speech practice & analysis dashboard — built to help you speak with more clarity, confidence, and control.**
+> **AI-powered adaptive speech practice & analysis dashboard — built to help students speak with more clarity, confidence, and control.**
 
-recraftt. records your voice, transcribes it in the cloud, and delivers instant, actionable feedback on your speaking habits — from pace and filler words to AI-powered rephrasing suggestions.
+recraftt. records your voice, transcribes it, analyses your communication patterns, and turns your performance into personalised feedback and targeted practice.
+
+Instead of giving every learner the same practice, recraftt. builds an understanding of individual communication strengths and weaknesses across repeated sessions.
 
 ---
 
-## ✨ Features at a Glance
+## 👀 Features at a Glance
 
 ### 🎤 In-Browser Voice Recorder
-- One-click recording directly from your browser no plugins required!
-- Live **animated waveform canvas** visualises your audio in real-time
-- On-screen **countdown timer** tracks the length of each session
+- One-click recording directly from your browser — no plugins required!
+- Live recording interface with an animated waveform
+- On-screen countdown timer tracks session duration
 - Recordings are sent securely to the backend as `.webm` audio blobs
 
-<img width="1894" height="974" alt="image" src="https://github.com/user-attachments/assets/e9d932fd-8038-45dc-83cd-9d308d3ddb7d" />
-
 ### 📝 AI Transcription via Whisper
-- Audio is transcribed using **Groq's Whisper Large V3** model for fast, accurate speech-to-text
-- Returns word-level segments used to compute precise timing metrics
-- Gracefully handles silence alerts you if no speech is detected
-
-<img width="524" height="457" alt="image" src="https://github.com/user-attachments/assets/bc5cccc2-1409-4cf1-8847-4aa056c9a3fc" />
-
+- Recorded speech is transcribed using Whisper
+- Produces a text transcript for communication analysis
+- Handles silent recordings gracefully and alerts the learner when no speech is detected
 
 ### 📊 Speech Metrics Dashboard
-After every session, you get an instant breakdown:
 
-<img width="552" height="734" alt="image" src="https://github.com/user-attachments/assets/7307e280-e0fe-43df-a76b-dd9049eb5089" />
-
+After every speaking session, recraftt. provides an instant breakdown:
 
 | Metric | What It Measures |
 |---|---|
-| **Speaking Pace** | Words per minute (WPM) with a visual slow / balanced / fast gauge |
+| **Speaking Pace** | Words per minute (WPM) with a slow / balanced / fast indicator |
 | **Duration** | Total speaking time in seconds |
-| **Word Count** | Total words spoken in the session |
+| **Word Count** | Total words spoken during the session |
 
 ### 🚦 Filler Word Detection
-- Detects 13 common fillers: `um`, `uh`, `like`, `you know`, `so`, `actually`, `basically`, `literally`, `right`, `okay`, `well`, `mm`, `hmm`
-- Displays each filler with its count as a **visual tag cloud**
-- Integrated into feedback the most-used filler becomes tomorrow's focus!
+- Detects common filler words such as:
+  `um`, `uh`, `like`, `you know`, `so`, `actually`, `basically`, `literally`, `right`, `okay`, `well`, `mm`, `hmm`
+- Displays detected fillers and their counts
+- Filler usage contributes to the learner's communication profile
+- The system can identify filler words as a primary area for improvement
 
-### ✂️ Self-Correction Detection
-- Automatically flags self-correction phrases: *"I meant"*, *"let me rephrase"*, *"what I meant was"*, *"sorry"*, and more
-- Shows the list of detected corrections so you can see exactly where you stumbled
+### ✂️ Self-Correction & Broken-Phrasing Detection
+- Detects self-corrections and broken sentence structures
+- Identifies patterns such as:
+  - `"I meant..."`
+  - `"let me rephrase..."`
+  - `"what I meant was..."`
+  - `"sorry..."`
+- Uses these signals to evaluate speaking fluency and communication control
 
-### 🤖 AI Rephrasing Suggestions (GPT-OSS-120B)
-- Powered by **Groq's GPT-OSS-120B** model via the OpenAI-compatible API
-- Identifies broken phrasing, restarts, and stutters in your transcript
-- For each issue found, provides:
-  - **Original** - what you actually said
-  - **Suggestion** - a cleaner, more confident way to say the same thing
-- Evaluates: clarity of ideas, confidence, organisation, speaking flow, and overall effectiveness
+### 🤖 AI Communication Analysis
+
+recraftt. uses an AI analysis layer to evaluate the learner's complete spoken response.
+
+The current AI analysis uses the configured `gpt-oss-120b` model through the Groq API.
+
+The system evaluates communication aspects such as:
+
+- Clarity
+- Confidence
+- Organisation
+- Speaking flow
+- Sentence construction
+- Overall communication effectiveness
+
+### ✨ A Better Way to Say It
+
+Instead of correcting individual phrases separately, recraftt. reconstructs the learner's **complete spoken response** into a clearer and more natural version.
+
+The goal is to preserve the learner's original meaning while removing:
+
+- Hesitation
+- Broken phrasing
+- Unnecessary repetition
+- Awkward sentence construction
+- Stutters and restarts
+
+#### Example
+
+**You said:**
+
+> "I have to get to um there I think to my colleague meeting at 7 pm."
+
+**A clearer way to say it:**
+
+> "I have to meet my colleague at their place at 7 pm."
+
+The system does not intentionally change the speaker's facts, people, locations, times, opinions, or intended meaning.
+
+### 🧠 Communication Profile
+
+recraftt. builds a communication profile from repeated speaking sessions.
+
+The profile currently tracks:
+
+- **Pace Score**
+- **Filler Control**
+- **Fluency / Self-Correction Score**
+- **Communication Trend**
+- **Primary Weakness**
+- **Today's Recommendation**
+
+The profile uses recent sessions to provide a more meaningful picture of the learner's communication habits instead of relying only on a single recording.
+
+### 🎯 Personalised Feedback & Missions
+
+After each session, recraftt. provides targeted coaching based on the learner's performance.
+
+Examples:
+
+- Too many fillers → Practice replacing filler words with silent pauses
+- Speaking too quickly → Focus on controlled pacing and pauses
+- Frequent self-corrections → Plan the sentence before speaking
+- Communication weakness identified → Receive a targeted practice recommendation
+
+The goal is to turn analysis into an actionable next step.
 
 ### 🏆 Daily Speaking Prompts
-- 30+ curated speaking prompts covering personal stories, professional topics, and creative questions
-- **Refresh button** fetches a new prompt at any time
-- Prompts serve as realistic practice scenarios, not just exercises
 
-### 📈 Personalised Feedback & Mission
-- **Key Takeaways** - 2–3 targeted observations about pace, fillers, and corrections
-- **Mission for Tomorrow** - a single, specific improvement goal tailored to your biggest weak point that session:
-  - Too many fillers? → Focus on replacing `"um"` with a silent pause
-  - Too fast? → Slow down at key points
-  - Self-corrections? → Pause before starting sentences
+- Curated speaking prompts provide realistic practice scenarios
+- Prompts cover personal, professional and creative topics
+- A refresh option allows learners to generate another prompt
+- Prompts encourage spontaneous spoken communication
 
 ### 🔥 Streak Tracker
-- Tracks consecutive days you have practised
-- Live **streak badge** in the header keeps you accountable
-- Resets to zero if you skip a day - keep the streak alive!
+
+- Tracks consecutive practice days
+- Displays the learner's current practice streak
+- Encourages consistent speaking practice
 
 ### 📂 Session History
-- Every session is auto-saved to Supabase database
-- The **Session History** panel shows all past sessions: date, prompt, pace, and feedback
-- Individual sessions can be **deleted** from the UI
 
-<img width="1214" height="243" alt="image" src="https://github.com/user-attachments/assets/6e9f67d8-1d9b-4770-9aae-17251d36f7e8" />
+- Speaking sessions are stored in Supabase
+- Previous sessions can be viewed from the dashboard
+- History includes:
+  - Date and time
+  - Prompt
+  - Speaking pace
+  - Filler count
+  - Correction count
+- Individual sessions can be deleted from the interface
 
+---
+
+## 🧠 Adaptive Learning
+
+The SIH26207 version extends recraftt. from a speech-analysis tool into an adaptive learning system.
+
+The intended learning loop is:
+
+```text
+Assessment
+    ↓
+Skill Profile
+    ↓
+Gap Detection
+    ↓
+Personalised Mission
+    ↓
+Practice
+    ↓
+Reassessment
+    ↓
+Progress
+````
+
+Instead of giving every learner identical speaking exercises, the system uses their measured communication performance to identify areas that need attention.
+
+For example:
+
+```text
+High Filler Usage
+        ↓
+Filler Control identified as weakness
+        ↓
+Silent-Pause Practice
+        ↓
+New Speaking Session
+        ↓
+Reassessment
+```
+
+This creates a continuous feedback loop where practice can become increasingly personalised to the learner.
+
+---
+
+## 📈 Communication Scoring
+
+The current communication profile uses measurable signals from speaking sessions.
+
+### Speaking Pace
+
+The pace score evaluates how close the learner's speaking speed is to a balanced speaking range.
+
+### Filler Control
+
+The filler score is based on the proportion of filler words relative to the total number of spoken words.
+
+### Fluency
+
+The fluency score considers the frequency of detected self-corrections relative to the spoken response.
+
+### Communication Trend
+
+Repeated session scores are compared to identify whether the learner's communication performance is:
+
+* **Improving**
+* **Stable**
+* **Declining**
+
+The system uses recent sessions to reduce the effect of individual outlier recordings.
+
+---
+
+## 🔄 End-to-End Learning Flow
+
+```text
+Daily Prompt
+     ↓
+Voice Recording
+     ↓
+Whisper Transcription
+     ↓
+Speech Metrics
+     ↓
+Filler Detection
+     ↓
+Self-Correction Analysis
+     ↓
+AI Communication Analysis
+     ↓
+"A Better Way to Say It"
+     ↓
+Personalised Feedback
+     ↓
+Communication Profile
+     ↓
+Next Practice Recommendation
+     ↓
+Session History
+     ↓
+Reassessment
+```
 
 ---
 
 ## 🏗️ Architecture
 
-```
+```text
 recraftt/
-├── app.py              # FastAPI backend — REST API routes
-├── transcriber.py      # Groq Whisper Large V3 transcription
-├── analyzer.py         # Pace, filler word & correction detection
-├── ai_analyzer.py      # Groq GPT-OSS-120B rephrasing suggestions
-├── feedback.py         # Rule-based feedback & mission generator
-├── prompts.py          # Daily speaking prompt bank (30+ prompts)
-├── tracker.py          # Session persistence & streak calculation
+├── app.py                 # FastAPI backend — REST API routes
+├── transcriber.py         # Groq's Whisper speech transcription
+├── analyzer.py            # Pace, filler & correction analysis
+├── ai_analyzer.py         # Groq's GPT-OSS-120b AI communication analysis & rewriting
+├── adaptive_engine.py     # Communication profile & adaptive scoring
+├── feedback.py            # Feedback & mission generation
+├── prompts.py             # Speaking prompt bank
+├── tracker.py             # Session persistence & streak calculation
 ├── static/
-│   ├── index.html      # Single-page application shell
-│   ├── style.css       # Premium glassmorphism design system
-│   └── app.js          # Frontend logic — recorder, API calls, UI
-└── requirements.txt    # Python dependencies
+│   ├── index.html         # Dashboard interface
+│   ├── style.css          # UI design system
+│   └── app.js             # Frontend logic & API integration
+└── requirements.txt       # Python dependencies
 ```
 
-### Tech Stack
+---
 
-| Layer | Technology |
-|---|---|
-| **Backend** | Python · FastAPI · Uvicorn |
-| **AI / STT** | Groq's Whisper Large v3 (transcription) |
-| **AI / NLP** | Groq's GPT-OSS-120B (rephrasing analysis) |
-| **Frontend** | Vanilla HTML · CSS · JavaScript |
-| **Design** | Glassmorphism · Playfair Display · Canvas API |
-| **Storage** | Supabase database |
+## 🛠️ Tech Stack
+
+| Layer              | Technology                                    |
+| ------------------ | --------------------------------------------- |
+| **Backend**        | Python · FastAPI · Uvicorn                    |
+| **Speech-to-Text** | Whisper                                       |
+| **AI / NLP**       | Groq API · `gpt-oss-120b`                     |
+| **Frontend**       | Vanilla HTML · CSS · JavaScript               |
+| **Design**         | Glassmorphism · Playfair Display · Canvas API |
+| **Storage**        | Supabase                                      |
+
+---
+
+## 🎓 Smart Education Direction
+
+recraftt. is designed around the idea that effective digital learning should respond to the individual learner.
+
+A learner who struggles with filler words should not receive the same intervention as someone who speaks too quickly.
+
+The system therefore aims to move from:
+
+```text
+Same Practice → Same Feedback
+```
+
+towards:
+
+```text
+Individual Assessment
+        ↓
+Individual Skill Profile
+        ↓
+Individual Weakness
+        ↓
+Individual Practice
+        ↓
+Individual Progress
+```
+
+This forms the foundation for an adaptive communication-learning platform.
 
 ---
 
 ## 🗺️ Roadmap
 
-- [✔] User authentication & cloud sync
-- [ ] Progress charts over time (pace trends, filler word reduction)
-- [ ] Custom prompt categories (job interviews, public speaking, storytelling)
-- [ ] Pronunciation scoring
+* [✔] User authentication & cloud session storage
+* [✔] In-browser voice recording
+* [✔] Whisper transcription
+* [✔] Speaking pace analysis
+* [✔] Filler-word detection
+* [✔] Self-correction detection
+* [✔] AI communication analysis
+* [✔] Full-response AI rephrasing
+* [✔] Personalised feedback
+* [✔] Next-session recommendations
+* [✔] Communication Profile
+* [✔] Session History
+* [✔] Adaptive communication scoring
+* [ ] Expanded adaptive practice categories
+* [ ] Long-term progress visualisation
+* [ ] Advanced pronunciation analysis
+* [ ] Expanded learning analytics
 
 ---
 
-## 🗿 Thanks To
+## 🚀 Running Locally
 
-- Huge shoutout to my friend Anbu Chelvan for mentoring me on this project! He’s an aspiring game dev go check out his awesome work!- https://www.instagram.com/rozex.studios/
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd recraftt.
+```
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+### 3. Activate the environment
+
+#### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+#### Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Configure environment variables
+
+Create a `.env` file containing the required API and database credentials.
+
+### 6. Start the server
+
+```bash
+uvicorn app:app --reload
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000
+```
 
 ---
-## 🌐 Check Out The Website
 
-- https://recraftt.onrender.com/
+## 📌 Project Goal
+
+recraftt. aims to turn spoken communication practice into a measurable and personalised learning experience.
+
+Instead of simply telling a learner whether their speech was "good" or "bad", the system identifies specific communication patterns, explains how to improve them, recommends what to practise next, and tracks performance across sessions.
+
+The long-term goal is:
+
+> **Assess → Personalise → Practise → Reassess → Improve**
 
 ---
 
 ## 📄 License
 
-This project is a prototype. Licensing TBD.
+This project is a prototype developed for Smart India Hackathon 2026.
 
 ---
 
-<p align="center">Built with love to help people speak better, one session at a time.</p>
-<p align="center"> A project by Sri Hari Haran. </p>
+<p align="center">
+Built to help students speak better, one session at a time.
+</p>
+
