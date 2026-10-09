@@ -394,11 +394,6 @@ The long-term goal is:
 
 ---
 
-## 📄 License
-
-This project is a prototype developed for Smart India Hackathon 2026.
-
----
 
 <p align="center">
 Built to help students speak better, one session at a time.
