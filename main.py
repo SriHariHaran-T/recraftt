@@ -20,7 +20,7 @@ print("Transcript:")
 print(text)
 text, segments = transcribe_audio(audio_file)
 if not text.strip():
-    print("\nNo speech detected — please try recording again and make sure you're speaking clearly into your microphone.")
+    print("\nNo speech detected, please try recording again and make sure you're speaking clearly into your microphone.")
     exit()
 
 from ai_analyzer import detect_repetition_ai

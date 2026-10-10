@@ -73,7 +73,8 @@ def analyze_user_progress(history):
             "filler_score": 0,
             "correction_score": 0,
             "trend": "needs_more_data",
-            "recommended_exercise": "Practice a random prompt to gather more data."
+            "recommended_exercise": "Practice a random prompt to gather more data.",
+            "challenge_level": "FOUNDATION"
         }
 
     # Reverse to chronological (oldest first)
@@ -141,6 +142,16 @@ def analyze_user_progress(history):
     
     recommended_exercise = recommendation_map.get(primary_weakness, "Practice a random prompt.")
 
+    # Calculate Challenge Level
+    recent_overall_score = (current_pace_score + current_filler_score + current_correction_score) / 3
+
+    if recent_overall_score < 60 or (trend == "declining" and recent_overall_score < 70):
+        challenge_level = "FOUNDATION"
+    elif recent_overall_score >= 85 and trend != "declining":
+        challenge_level = "CHALLENGE"
+    else:
+        challenge_level = "DEVELOPING"
+
     return {
         "primary_weakness": primary_weakness,
         "secondary_weakness": secondary_weakness,
@@ -148,5 +159,6 @@ def analyze_user_progress(history):
         "filler_score": current_filler_score,
         "correction_score": current_correction_score,
         "trend": trend,
-        "recommended_exercise": recommended_exercise
+        "recommended_exercise": recommended_exercise,
+        "challenge_level": challenge_level
     }

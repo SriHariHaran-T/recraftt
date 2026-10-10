@@ -115,7 +115,7 @@ async function fetchAdaptiveProfile() {
 
         if (data) {
             // 1. Always show the profile section when we have a valid response
-            document.getElementById('profileSection').style.display = 'block';
+            document.getElementById('profileSection').classList.remove('hidden');
 
             if (data.trend === "needs_more_data") {
                 // 2. Handle the "needs_more_data" baseline state
@@ -145,6 +145,20 @@ async function fetchAdaptiveProfile() {
                 document.getElementById('profTrend').textContent = data.trend.replace('_', ' ');
                 document.getElementById('profFocus').textContent = data.primary_weakness.replace('_', ' ');
                 document.getElementById('profRec').textContent = data.recommended_exercise;
+            }
+
+            // 4. Update the Challenge Level Badges
+            const badge = document.getElementById('profChallengeLevel');
+            const popoverBadge = document.getElementById('popoverLevelBadge');
+            if (data.challenge_level) {
+                if (badge) {
+                    badge.textContent = data.challenge_level;
+                    badge.className = 'challenge-badge ' + data.challenge_level.toLowerCase();
+                }
+                if (popoverBadge) {
+                    popoverBadge.textContent = data.challenge_level;
+                    popoverBadge.className = 'challenge-badge ' + data.challenge_level.toLowerCase();
+                }
             }
         }
     } catch (err) {
@@ -335,10 +349,10 @@ function drawLiveWaveform() {
     for (let i = 0; i < dataArray.length; i++) {
         barHeight = dataArray[i] / 2;
 
-        // Custom emerald to cyan colors matching theme
-        const red = 16 + (i * 2);
-        const green = 185 - (i * 0.5);
-        const blue = 129 + (i * 0.8);
+        // Map to blue theme (77, 168, 255) to (99, 179, 237)
+        const red = Math.min(77 + (i * 0.5), 99);
+        const green = Math.min(168 + (i * 0.2), 179);
+        const blue = Math.min(255 - (i * 0.4), 255);
         canvasCtx.fillStyle = `rgb(${red}, ${green}, ${blue})`;
 
         // Draw centered bars
@@ -562,6 +576,19 @@ async function renderProgressChart() {
 
     const ctx = chartCanvas.getContext('2d');
 
+    // Create subtle gradients
+    const blueGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    blueGradient.addColorStop(0, 'rgba(77, 168, 255, 0.4)');
+    blueGradient.addColorStop(1, 'rgba(77, 168, 255, 0.0)');
+
+    const amberGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    amberGradient.addColorStop(0, 'rgba(245, 158, 11, 0.4)');
+    amberGradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
+
+    const greenGradient = ctx.createLinearGradient(0, 0, 0, 400);
+    greenGradient.addColorStop(0, 'rgba(52, 211, 153, 0.4)');
+    greenGradient.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -570,66 +597,115 @@ async function renderProgressChart() {
                 {
                     label: 'Speaking Pace (WPM)',
                     data: paces,
-                    borderColor: '#4A90D9',
+                    borderColor: '#4da8ff',
+                    backgroundColor: blueGradient,
+                    fill: true,
                     yAxisID: 'y',
-                    tension: 0.3
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#060d1f',
+                    pointBorderColor: '#4da8ff',
+                    pointBorderWidth: 2
                 },
                 {
                     label: 'Filler Words',
                     data: fillerTotals,
-                    borderColor: '#E07A5F',
+                    borderColor: '#F59E0B',
+                    backgroundColor: amberGradient,
+                    fill: true,
                     yAxisID: 'y1',
-                    tension: 0.3
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#060d1f',
+                    pointBorderColor: '#F59E0B',
+                    pointBorderWidth: 2
                 },
                 {
                     label: 'Self-Corrections',
                     data: correctionCounts,
-                    borderColor: '#81B29A',
+                    borderColor: '#34d399',
+                    backgroundColor: greenGradient,
+                    fill: true,
                     yAxisID: 'y1',
-                    tension: 0.3
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#060d1f',
+                    pointBorderColor: '#34d399',
+                    pointBorderWidth: 2
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
             plugins: {
                 legend: {
                     labels: {
+                        color: '#f0f4ff',
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        pointRadius: isMobile ? 2 : 2,
-                        padding: isMobile ? 2 : 4
+                        pointRadius: isMobile ? 3 : 4,
+                        padding: isMobile ? 10 : 20
                     }
                 },
                 title: {
                     display: true,
                     text: 'Speaking Progress Over Time',
+                    color: '#f0f4ff',
                     font: {
-                        size: isMobile ? 12 : 12
-                    }
+                        size: isMobile ? 14 : 16,
+                        family: "'Google Sans', sans-serif",
+                        weight: '600'
+                    },
+                    padding: { bottom: 20 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(10, 22, 48, 0.9)',
+                    titleColor: '#f0f4ff',
+                    bodyColor: '#8ba3c9',
+                    borderColor: 'rgba(255, 255, 255, 0.09)',
+                    borderWidth: 1,
+                    padding: 10,
+                    displayColors: true,
                 }
             },
             scales: {
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#8ba3c9',
+                        font: { size: isMobile ? 10 : 12 }
+                    }
+                },
                 y: {
                     type: 'linear',
                     position: 'left',
-                    title: { display: true, text: 'Words per minute' },
+                    title: { display: true, text: 'Words per minute', color: '#6b90bd' },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.05)',
+                        drawBorder: false
+                    },
                     ticks: {
-                        font: {
-                            size: isMobile ? 8 : 12
-                        }
+                        color: '#8ba3c9',
+                        font: { size: isMobile ? 10 : 12 }
                     }
                 },
                 y1: {
                     type: 'linear',
                     position: 'right',
-                    title: { display: true, text: 'Count' },
-                    grid: { drawOnChartArea: false },
+                    title: { display: true, text: 'Count', color: '#6b90bd' },
+                    grid: { display: false },
                     ticks: {
-                        font: {
-                            size: isMobile ? 8 : 12
-                        }
+                        color: '#8ba3c9',
+                        font: { size: isMobile ? 10 : 12 },
+                        stepSize: 1
                     }
                 }
             }
@@ -643,14 +719,99 @@ document.querySelectorAll(".google-login-btn").forEach(btn => {
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: 'https://recrafttforstudents.onrender.com',
+                redirectTo: window.location.origin,
             }
         });
         if (error) console.error("Login error:", error);
     });
 });
 
-// Check if user is already logged in in when page loads
+// Avatar Helpers & Popover State
+function getInitials(name) {
+    if (!name) return "L";
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+}
+
+function renderUserAvatar(containerEl, avatarUrl, initials, fullName) {
+    if (!containerEl) return;
+    containerEl.innerHTML = '';
+    if (avatarUrl) {
+        const img = document.createElement('img');
+        img.src = avatarUrl;
+        img.alt = fullName || 'User Avatar';
+        img.className = 'avatar-img';
+        img.referrerPolicy = 'no-referrer';
+
+        const fallbackSpan = document.createElement('span');
+        fallbackSpan.className = 'avatar-initials';
+        fallbackSpan.textContent = initials;
+        fallbackSpan.style.display = 'none';
+
+        img.onerror = () => {
+            img.style.display = 'none';
+            fallbackSpan.style.display = 'inline-block';
+        };
+
+        containerEl.appendChild(img);
+        containerEl.appendChild(fallbackSpan);
+    } else {
+        const span = document.createElement('span');
+        span.className = 'avatar-initials';
+        span.textContent = initials;
+        containerEl.appendChild(span);
+    }
+}
+
+const userAvatarBtn = document.getElementById('userAvatarBtn');
+const profilePopover = document.getElementById('profilePopover');
+
+function toggleProfilePopover(forceState) {
+    if (!profilePopover || !userAvatarBtn) return;
+    const shouldOpen = typeof forceState === 'boolean'
+        ? forceState
+        : !profilePopover.classList.contains('open');
+
+    if (shouldOpen) {
+        profilePopover.classList.add('open');
+        userAvatarBtn.setAttribute('aria-expanded', 'true');
+    } else {
+        profilePopover.classList.remove('open');
+        userAvatarBtn.setAttribute('aria-expanded', 'false');
+    }
+}
+
+function closeProfilePopover() {
+    toggleProfilePopover(false);
+}
+
+if (userAvatarBtn) {
+    userAvatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleProfilePopover();
+    });
+}
+
+// Click outside closes popover
+document.addEventListener('click', (e) => {
+    if (profilePopover && profilePopover.classList.contains('open')) {
+        if (!profilePopover.contains(e.target) && !userAvatarBtn.contains(e.target)) {
+            closeProfilePopover();
+        }
+    }
+});
+
+// Escape key closes popover
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && profilePopover && profilePopover.classList.contains('open')) {
+        closeProfilePopover();
+    }
+});
+
+// Check if user is already logged in when page loads
 async function checkUser() {
     const loginMainBtn = document.querySelector(".login-main-btn");
     if (loginMainBtn) {
@@ -660,13 +821,35 @@ async function checkUser() {
     }
 
     const { data: { session } } = await supabaseClient.auth.getSession();
-    let userName;
     if (session) {
-        userName = session.user.user_metadata.name.split(" ")[0];
-        document.getElementById("headerLoginBtn").classList.add("hidden");
-        document.getElementById("logoutBtn").classList.remove("hidden");
-        document.getElementById("userInfo").textContent = `Signed in as ${userName}`;
-        document.getElementById("userInfo").classList.remove("hidden");
+        const user = session.user;
+        const meta = user.user_metadata || {};
+        const fullName = meta.full_name || meta.name || (user.email ? user.email.split('@')[0] : "Learner");
+        const avatarUrl = meta.avatar_url || meta.picture || "";
+        const initials = getInitials(fullName);
+
+        // Populate avatar in header, popover, and profile section
+        const headerAvatar = document.getElementById('headerAvatar');
+        const popoverAvatar = document.getElementById('popoverAvatar');
+        const profLearnerAvatar = document.getElementById('profLearnerAvatar');
+        renderUserAvatar(headerAvatar, avatarUrl, initials, fullName);
+        renderUserAvatar(popoverAvatar, avatarUrl, initials, fullName);
+        renderUserAvatar(profLearnerAvatar, avatarUrl, initials, fullName);
+
+        // Populate learner name in popover and profile section
+        const popoverUserName = document.getElementById('popoverUserName');
+        if (popoverUserName) {
+            popoverUserName.textContent = fullName;
+        }
+        const profLearnerName = document.getElementById('profLearnerName');
+        if (profLearnerName) {
+            profLearnerName.textContent = fullName;
+        }
+
+        // Show avatar button, hide login button
+        const headerLoginBtn = document.getElementById("headerLoginBtn");
+        if (headerLoginBtn) headerLoginBtn.classList.add("hidden");
+        if (userAvatarBtn) userAvatarBtn.classList.remove("hidden");
 
         await Promise.all([
             fetchPrompt(),
@@ -679,15 +862,16 @@ async function checkUser() {
         document.getElementById("appContainer").classList.remove("hidden");
 
     } else {
+        closeProfilePopover();
         if (loginMainBtn) {
             loginMainBtn.innerHTML = 'Sign in with Google';
             loginMainBtn.style.pointerEvents = "auto";
             loginMainBtn.style.opacity = "1";
         }
 
-        document.getElementById("headerLoginBtn").classList.remove("hidden");
-        document.getElementById("logoutBtn").classList.add("hidden");
-        document.getElementById("userInfo").classList.add("hidden");
+        const headerLoginBtn = document.getElementById("headerLoginBtn");
+        if (headerLoginBtn) headerLoginBtn.classList.remove("hidden");
+        if (userAvatarBtn) userAvatarBtn.classList.add("hidden");
 
         document.getElementById("loginContainer").classList.remove("hidden");
         document.getElementById("appContainer").classList.add("hidden");
@@ -696,12 +880,15 @@ async function checkUser() {
 
 checkUser();
 
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) {
-        console.error("Logout error:", error);
-        return;
-    }
-    // Smoothly return to sign-in page without full page reload
-    checkUser();
-});
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        closeProfilePopover();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) {
+            console.error("Logout error:", error);
+            return;
+        }
+        checkUser();
+    });
+}

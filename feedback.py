@@ -3,9 +3,9 @@ def generate_feedback(pace, filler_counts, corrections):
 
     # Pace
     if pace < 110:
-        feedback.append("Your pace was a bit slow today — try adding a touch more energy to keep your listener engaged.")
+        feedback.append("Your pace was a bit slow today. Try adding a touch more energy to keep your listener engaged.")
     elif pace > 160:
-        feedback.append("You spoke quite fast — slowing down slightly could help your ideas land more clearly.")
+        feedback.append("You spoke quite fast. Slowing down slightly could help your ideas land more clearly.")
     else:
         feedback.append("Your speaking pace was well-balanced and easy to follow.")
 
@@ -14,11 +14,11 @@ def generate_feedback(pace, filler_counts, corrections):
     most_common_filler = max(filler_counts, key=filler_counts.get) if filler_counts else None
 
     if total_fillers == 0:
-        feedback.append("Great job — no filler words detected in this session.")
+        feedback.append("Great job! No filler words detected in this session.")
     elif total_fillers <= 2:
-        feedback.append(f"You used {total_fillers} filler word(s). That's pretty minimal — nice control.")
+        feedback.append(f"You used {total_fillers} filler word(s). That's pretty minimal. Nice control.")
     else:
-        feedback.append(f"You used {total_fillers} filler words, most often '{most_common_filler}'. Try pausing silently instead of filling gaps with words.")
+        feedback.append(f"You used {total_fillers} filler word(s), most often '{most_common_filler}'. Try pausing silently instead of filling gaps with words.")
 
     # Corrections
     if corrections:
