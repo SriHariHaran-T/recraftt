@@ -106,6 +106,52 @@ async function fetchHistoryAndStreak() {
     }
 }
 
+// Fetch Adaptive Profile
+async function fetchAdaptiveProfile() {
+    try {
+        const headers = await getAuthHeaders();
+        const response = await fetch('/api/adaptive-profile', { headers });
+        const data = await response.json();
+        
+        if (data) {
+            // 1. Always show the profile section when we have a valid response
+            document.getElementById('profileSection').style.display = 'block';
+            
+            if (data.trend === "needs_more_data") {
+                // 2. Handle the "needs_more_data" baseline state
+                document.getElementById('profPaceScore').textContent = "-";
+                document.getElementById('profPaceBar').style.width = "0%";
+                
+                document.getElementById('profFillerScore').textContent = "-";
+                document.getElementById('profFillerBar').style.width = "0%";
+                
+                document.getElementById('profFluencyScore').textContent = "-";
+                document.getElementById('profFluencyBar').style.width = "0%";
+                
+                document.getElementById('profTrend').textContent = "More data needed";
+                document.getElementById('profFocus').textContent = "Building baseline";
+                document.getElementById('profRec').textContent = "Complete another speaking session to unlock personalized coaching.";
+            } else {
+                // 3. Populate actual scores for users with sufficient history
+                document.getElementById('profPaceScore').textContent = data.pace_score;
+                document.getElementById('profPaceBar').style.width = `${data.pace_score}%`;
+                
+                document.getElementById('profFillerScore').textContent = data.filler_score;
+                document.getElementById('profFillerBar').style.width = `${data.filler_score}%`;
+                
+                document.getElementById('profFluencyScore').textContent = data.correction_score;
+                document.getElementById('profFluencyBar').style.width = `${data.correction_score}%`;
+                
+                document.getElementById('profTrend').textContent = data.trend.replace('_', ' ');
+                document.getElementById('profFocus').textContent = data.primary_weakness.replace('_', ' ');
+                document.getElementById('profRec').textContent = data.recommended_exercise;
+            }
+        }
+    } catch (err) {
+        console.error("Error loading adaptive profile:", err);
+    }
+}
+
 // Render History Items
 function renderHistoryList(history) {
     historyList.innerHTML = '';
@@ -328,6 +374,7 @@ async function uploadAndAnalyze() {
         if (result) {
             displaySessionResults(result);
             fetchHistoryAndStreak(); // refresh history & streak count
+            fetchAdaptiveProfile(); // refresh adaptive profile
         }
     } catch (err) {
         console.error("Analysis failed:", err);
@@ -586,7 +633,8 @@ async function checkUser() {
         await Promise.all([
             fetchPrompt(),
             fetchHistoryAndStreak(),
-            renderProgressChart()
+            renderProgressChart(),
+            fetchAdaptiveProfile()
         ]);
 
         document.getElementById("loginContainer").classList.add("hidden");

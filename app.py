@@ -23,6 +23,7 @@ from feedback import generate_feedback
 from ai_analyzer import detect_repetition_ai
 from tracker import save_session, get_streak, delete_session, get_history
 from ai_analyzer import detect_repetition_ai, check_relevance, is_relevant
+from adaptive_engine import analyze_user_progress
 
 app = FastAPI(title="recraftt. Speech Analyzer API")
 
@@ -54,6 +55,16 @@ def api_get_history(request: Request):
         streak = get_streak(user_id, token)
         history = get_history(user_id, token)
         return {"streak": streak, "history": history}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/adaptive-profile")
+def api_get_adaptive_profile(request: Request):
+    user_id, token = get_current_user_id(request)
+    try:
+        history = get_history(user_id, token)
+        profile = analyze_user_progress(history)
+        return profile
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
