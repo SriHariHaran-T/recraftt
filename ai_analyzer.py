@@ -12,32 +12,32 @@ client = OpenAI(
 )
 
 def detect_repetition_ai(transcript):
-    prompt = f"""You are an expert editor analyzing a recorded interview transcript.
-    Your job is to identify and correct speaking errors ONLY.
-    
-    Rules:
-    1. Find self-corrections, broken phrasing, restarts, and stutters.
-    2. Fix ONLY the mistakes — keep the meaning, vocabulary, and tone exactly the same.
-    3. DO NOT summarize, simplify, reword, improve grammar, add details, or change the style.
-    4. Output the corrected text ONLY, without explanations or labels.
+    prompt = f"""You are an expert communication coach analyzing a spoken transcript.
+Your goal is to reconstruct the user's complete message into a natural, concise, and confident version.
 
-    Evaluate the user's communication in the following areas:
-    - Clarity of ideas
-    - Confidence
-    - Organization and structure
-    - Speaking flow
-    - Repeated phrases or restarts
-    - Overall communication effectiveness
+Rules:
+1. Remove filler words ("um", "uh", "like", "you know").
+2. Remove false starts and abandoned phrases.
+3. Fix grammar and awkward sentence structure.
+4. Improve word choice when appropriate.
+5. Reconstruct fragmented thoughts into natural sentences.
+6. Preserve the user's ORIGINAL INTENDED MEANING completely.
+7. Do NOT add information that the user did not communicate.
+8. Do NOT change facts, people, locations, times, events, opinions or intentions.
+9. Make the result sound like something a confident, natural speaker would actually say in spoken English (avoid excessively formal or academic language).
+10. Be concise where possible without losing meaning.
+
+If the original transcript is already clear, natural, and confident, return a minimally edited version.
+If the transcript lacks any meaningful content to rewrite, set "better_way" to null.
 
 Transcript:
 \"\"\"{transcript}\"\"\"
 
-For each instance you find, respond in this exact format:
-Original: <what they said>
-Suggestion: <a clearer, more confident way to say the same thing in one smooth sentence>
-
-If none are found, respond with exactly: "None detected."
-Keep your response concise — no extra explanation, no preamble."""
+Respond ONLY with a valid JSON object in the exact following format, with no markdown formatting or extra text:
+{{
+    "original": "<complete original transcript>",
+    "better_way": "<complete reconstructed response or null>"
+}}"""
 
     response = client.chat.completions.create(
         model="openai/gpt-oss-120b",

@@ -112,22 +112,22 @@ async function fetchAdaptiveProfile() {
         const headers = await getAuthHeaders();
         const response = await fetch('/api/adaptive-profile', { headers });
         const data = await response.json();
-        
+
         if (data) {
             // 1. Always show the profile section when we have a valid response
             document.getElementById('profileSection').style.display = 'block';
-            
+
             if (data.trend === "needs_more_data") {
                 // 2. Handle the "needs_more_data" baseline state
                 document.getElementById('profPaceScore').textContent = "-";
                 document.getElementById('profPaceBar').style.width = "0%";
-                
+
                 document.getElementById('profFillerScore').textContent = "-";
                 document.getElementById('profFillerBar').style.width = "0%";
-                
+
                 document.getElementById('profFluencyScore').textContent = "-";
                 document.getElementById('profFluencyBar').style.width = "0%";
-                
+
                 document.getElementById('profTrend').textContent = "More data needed";
                 document.getElementById('profFocus').textContent = "Building baseline";
                 document.getElementById('profRec').textContent = "Complete another speaking session to unlock personalized coaching.";
@@ -135,13 +135,13 @@ async function fetchAdaptiveProfile() {
                 // 3. Populate actual scores for users with sufficient history
                 document.getElementById('profPaceScore').textContent = data.pace_score;
                 document.getElementById('profPaceBar').style.width = `${data.pace_score}%`;
-                
+
                 document.getElementById('profFillerScore').textContent = data.filler_score;
                 document.getElementById('profFillerBar').style.width = `${data.filler_score}%`;
-                
+
                 document.getElementById('profFluencyScore').textContent = data.correction_score;
                 document.getElementById('profFluencyBar').style.width = `${data.correction_score}%`;
-                
+
                 document.getElementById('profTrend').textContent = data.trend.replace('_', ' ');
                 document.getElementById('profFocus').textContent = data.primary_weakness.replace('_', ' ');
                 document.getElementById('profRec').textContent = data.recommended_exercise;
@@ -438,57 +438,92 @@ function displaySessionResults(data) {
         });
     }
 
-    // Render AI Rephrasing Suggestions
+    // Render AI "A Better Way to Say It"
     aiAnalysisContainer.innerHTML = '';
+
     const aiText = data.ai_repetition_analysis || "";
+    const originalTranscript = data.transcript || "";
 
     if (!aiText || aiText.includes("None detected")) {
-        aiAnalysisContainer.innerHTML = '<div class="status-pulse text-sm">No rephrasings needed — ideas flowed cleanly.</div>';
+        aiAnalysisContainer.innerHTML = `
+            <div class="status-pulse text-sm">
+                No rephrasing needed — your ideas flowed clearly.
+            </div>
+        `;
     } else {
-        // Parse "Original: <what they said>\nSuggestion: <clearer way>" format
-        const lines = aiText.split('\n');
-        let currentItem = {};
-        const parsedItems = [];
 
-        lines.forEach(line => {
-            if (line.startsWith('Original:')) {
-                currentItem.original = line.substring(9).trim();
-            } else if (line.startsWith('Suggestion:')) {
-                currentItem.suggestion = line.substring(11).trim();
-                parsedItems.push({ ...currentItem });
-                currentItem = {};
-            }
-        });
+        // Extract the holistic "better way" suggestion from the AI response.
+        let betterWay = "";
+        let aiOriginal = originalTranscript;
 
-        if (parsedItems.length === 0) {
-            // fallback if it printed something custom
-            const card = document.createElement('div');
-            card.className = 'ai-suggestion-card';
-            card.textContent = aiText;
-            aiAnalysisContainer.appendChild(card);
+        if (typeof aiText === "object" && aiText !== null) {
+            // Backend already returned a JSON object
+            betterWay = aiText.better_way || "";
+            aiOriginal = aiText.original || originalTranscript;
         } else {
-            parsedItems.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'ai-suggestion-card';
-                card.innerHTML = `
-                    <div class="ai-original">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                        ${item.original}
-                    </div>
-                    <div class="ai-suggested">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        ${item.suggestion}
-                    </div>
-                `;
-                aiAnalysisContainer.appendChild(card);
-            });
+            const cleanedText = String(aiText).trim();
+
+            // Try JSON first
+            try {
+                const parsed = JSON.parse(cleanedText);
+
+                if (parsed && typeof parsed === "object") {
+                    betterWay = parsed.better_way || "";
+                    aiOriginal = parsed.original || originalTranscript;
+                }
+            } catch (e) {
+                // Not JSON — try the older text format
+                const suggestionMatch = cleanedText.match(
+                    /(?:Better way|Suggestion|Rephrased|Improved):\s*(.+)/is
+                );
+
+                if (suggestionMatch) {
+                    betterWay = suggestionMatch[1].trim();
+                } else {
+                    betterWay = cleanedText;
+                }
+            }
         }
+
+        if (!betterWay) {
+            betterWay = "Try expressing the same idea in a shorter, clearer way.";
+        }
+
+        const section = document.createElement('div');
+        section.className = 'better-way-card';
+
+        const youSaid = document.createElement('div');
+        youSaid.className = 'better-way-original';
+
+        const originalLabel = document.createElement('div');
+        originalLabel.className = 'better-way-label';
+        originalLabel.textContent = 'YOU SAID';
+
+        const originalText = document.createElement('div');
+        originalText.className = 'better-way-text original';
+        originalText.textContent = `"${aiOriginal}"`;
+
+        youSaid.appendChild(originalLabel);
+        youSaid.appendChild(originalText);
+
+        const better = document.createElement('div');
+        better.className = 'better-way-suggestion';
+
+        const betterLabel = document.createElement('div');
+        betterLabel.className = 'better-way-label';
+        betterLabel.textContent = 'A CLEARER WAY TO SAY IT';
+
+        const betterText = document.createElement('div');
+        betterText.className = 'better-way-text';
+        betterText.textContent = betterWay;
+
+        better.appendChild(betterLabel);
+        better.appendChild(betterText);
+
+        section.appendChild(youSaid);
+        section.appendChild(better);
+
+        aiAnalysisContainer.appendChild(section);
     }
 
     // Render Mission & Feedback
@@ -520,12 +555,12 @@ async function renderProgressChart() {
 
     const chartCanvas = document.getElementById('progressChart');
 
-if (!chartCanvas) {
-    console.warn("Progress chart canvas not found.");
-    return;
-}
+    if (!chartCanvas) {
+        console.warn("Progress chart canvas not found.");
+        return;
+    }
 
-const ctx = chartCanvas.getContext('2d');
+    const ctx = chartCanvas.getContext('2d');
 
     new Chart(ctx, {
         type: 'line',

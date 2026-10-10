@@ -717,37 +717,69 @@ h3 {
     gap: 0.5rem;
 }
 
-/* AI Suggestion Cards */
-.ai-suggestion-card {
-    background: rgba(77, 168, 255, 0.04);
-    border: 1px solid rgba(77, 168, 255, 0.13);
-    border-radius: var(--radius-sm);
-    padding: 1rem;
-    margin-bottom: 0.85rem;
+/* AI Better Way */
+.better-way-card {
+    background: rgba(77, 168, 255, 0.035);
+    border: 1px solid rgba(77, 168, 255, 0.16);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.35rem;
+    margin-top: 0.75rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.ai-original {
+.better-way-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--blue-primary);
+}
+
+/* Section labels */
+.better-way-label {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--text-muted);
-    font-size: 0.88rem;
-    text-decoration: line-through;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    margin-bottom: 0.45rem;
 }
 
-.ai-suggested {
+/* What the user actually said */
+.better-way-original {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.better-way-text.original {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* AI's improved version */
+.better-way-suggestion {
+    padding-top: 0.05rem;
+}
+
+.better-way-suggestion .better-way-label {
+    color: var(--blue-primary);
+}
+
+.better-way-text {
+    display: block;
     color: var(--text-primary);
     font-family: var(--font-serif);
-    font-weight: 500;
-    font-size: 0.98rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.ai-suggested svg {
-    color: var(--blue-primary);
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.65;
 }
 
 /* Mission Section */
