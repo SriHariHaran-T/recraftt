@@ -457,7 +457,8 @@ function displaySessionResults(data) {
 }
 const isMobile = window.innerWidth < 600;
 async function renderProgressChart() {
-    const response = await fetch('/api/history');
+    const headers = await getAuthHeaders();
+    const response = await fetch('/api/history', { headers });
     const data = await response.json();
     const history = data.history;
 
