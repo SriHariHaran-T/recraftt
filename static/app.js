@@ -548,8 +548,6 @@ async function renderProgressChart() {
     });
 }
 
-renderProgressChart();
-
 // Login Button Handlers
 document.querySelectorAll(".google-login-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -614,9 +612,3 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     // Smoothly return to sign-in page without full page reload
     checkUser();
 });
-
-async function getAuthHeaders() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) return {};
-    return { "Authorization": `Bearer ${session.access_token}` };
-}
