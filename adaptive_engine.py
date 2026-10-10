@@ -21,8 +21,8 @@ def calculate_filler_score(total_fillers, total_words):
         return 100
     
     rate_percentage = (total_fillers / total_words) * 100
-    # Penalty: 15 points per 1% of words being fillers
-    return max(0, int(100 - (rate_percentage * 15)))
+    # Penalty: 7 points per 1% of words being fillers
+    return max(0, int(100 - (rate_percentage * 7)))
 
 def calculate_correction_score(total_corrections, total_words):
     """
@@ -33,8 +33,8 @@ def calculate_correction_score(total_corrections, total_words):
         return 100
 
     rate_percentage = (total_corrections / total_words) * 100
-    # Penalty: 20 points per 1% of words being self-corrections
-    return max(0, int(100 - (rate_percentage * 20)))
+    # Penalty: 8 points per 1% of words being self-corrections
+    return max(0, int(100 - (rate_percentage * 8)))
 
 def calculate_trend(scores):
     """
