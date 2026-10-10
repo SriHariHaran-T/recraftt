@@ -471,7 +471,14 @@ async function renderProgressChart() {
     );
     const correctionCounts = history.map(entry => (entry.corrections || []).length);
 
-    const ctx = document.getElementById('progressChart').getContext('2d');
+    const chartCanvas = document.getElementById('progressChart');
+
+if (!chartCanvas) {
+    console.warn("Progress chart canvas not found.");
+    return;
+}
+
+const ctx = chartCanvas.getContext('2d');
 
     new Chart(ctx, {
         type: 'line',
