@@ -319,9 +319,60 @@ h3 {
 }
 
 .popover-logout-btn:hover {
-    background: rgba(239, 68, 68, 0.18);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--blue-primary);
+    color: var(--text-primary);
+}
+
+/* Profile Edit Form Styles */
+.profile-edit-form {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.profile-input {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background: rgba(6, 16, 38, 0.45);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-input:focus {
+    border-color: var(--blue-primary);
+    box-shadow: 0 0 0 2px var(--blue-glow);
+}
+
+.profile-error {
+    color: var(--red);
+    font-size: 0.75rem;
+    display: none;
+    margin-top: -4px;
+    text-align: left;
+}
+
+.profile-edit-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.profile-save-btn, .profile-cancel-btn {
+    flex: 1;
+    padding: 0.55rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .popover-footer-note {

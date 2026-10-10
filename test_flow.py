@@ -1,6 +1,6 @@
 import os
+os.environ["GROQ_API_KEY"] = "test_key"
 import json
-import jwt
 from fastapi.testclient import TestClient
 from app import app
 import tracker
@@ -21,9 +21,8 @@ main_app.check_relevance = lambda p, t: "Relevant: Yes\nReason: test"
 
 client = TestClient(app)
 
-# Create fake token for auth
-token = jwt.encode({"sub": "test_user_duration_flow"}, "secret", algorithm="HS256")
-headers = {"Authorization": f"Bearer {token}"}
+# No auth headers needed for local app
+headers = {}
 
 print("--- Starting Flow Test ---")
 
@@ -56,7 +55,7 @@ try:
         print(f"DB Total Words: {latest.get('total_words')}")
         
         # Cleanup
-        tracker.delete_session(latest['id'], "test_user_duration_flow", token)
+        tracker.delete_session(latest['id'], "test_user_duration_flow")
         print("Test session cleaned up successfully.")
         
 except Exception as e:

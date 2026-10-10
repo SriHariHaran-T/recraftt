@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 # pyrefly: ignore [missing-import]
 from fastapi import Request, Form
-import jwt
+# jwt removed
 
 # Import existing application logic
 from prompts import get_daily_prompt
@@ -21,9 +21,13 @@ from transcriber import transcribe_audio
 from analyzer import calculate_pace, detect_fillers, detect_corrections
 from feedback import generate_feedback
 from ai_analyzer import detect_repetition_ai
-from tracker import save_session, get_streak, delete_session, get_history
+from tracker import save_session, get_streak, delete_session, get_history, get_profile, update_profile
 from ai_analyzer import detect_repetition_ai, check_relevance, is_relevant
 from adaptive_engine import analyze_user_progress
+from pydantic import BaseModel
+
+class ProfileUpdate(BaseModel):
+    display_name: str
 
 app = FastAPI(title="recraftt. Speech Analyzer API")
 
@@ -65,6 +69,27 @@ def api_get_adaptive_profile(request: Request):
         history = get_history(user_id, token)
         profile = analyze_user_progress(history)
         return profile
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/profile")
+def api_get_profile(request: Request):
+    user_id, token = get_current_user_id(request)
+    try:
+        return get_profile(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/profile")
+def api_update_profile(update: ProfileUpdate, request: Request):
+    user_id, token = get_current_user_id(request)
+    try:
+        name = update.display_name.strip()
+        if not name or len(name) > 40:
+            raise HTTPException(status_code=400, detail="Invalid name length")
+        return update_profile(user_id, name)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -174,17 +199,7 @@ async def serve_index():
 
 
 def get_current_user_id(request: Request):
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Missing or invalid authorization header")
-
-    token = auth_header.split(" ")[1]
-
-    try:
-        payload = jwt.decode(token, options={"verify_signature": False})
-        return payload["sub"], token  # Return both user_id and token
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+    return "local_user", None
 
 @app.delete("/api/history_duplicate/{index}")
 def api_delete_history_duplicate(index: int, request: Request):

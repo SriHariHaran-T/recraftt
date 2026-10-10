@@ -2,50 +2,65 @@
 
 **AI-powered speech practice and communication analysis.**
 
-recraftt. helps students improve their spoken communication through voice recording, speech analysis, personalised feedback, and repeated practice.
-> **AI-powered adaptive speech practice & analysis dashboard — built to help students speak with more clarity, confidence, and control.**
+recraftt. is a speech practice application designed to help students understand and improve their spoken communication. It records speech, transcribes audio, analyses speaking patterns, and provides feedback that learners can use in their next practice session.
 
-recraftt. records your voice, transcribes it, analyses your communication patterns, and turns your performance into personalised feedback and targeted practice.
-
-Instead of giving every learner the same practice, recraftt. builds an understanding of individual communication strengths and weaknesses across repeated sessions.
-
-It analyses speaking patterns, identifies potential areas for improvement, and turns each session into actionable suggestions for the next one.
+The goal is simple: help people understand how they speak and identify specific areas they can work on.
 
 ## Features
 
-### Voice Recording & Transcription
+### Voice Recording and Transcription
+
 - Record speech directly in the browser.
-- Transcribe audio using Whisper through the Groq API.
-- Handle recordings with no detected speech.
+- Transcribe recorded audio using Whisper through the Groq API.
+- Handle recordings where no speech is detected.
+- Measure speaking duration and total word count.
 
 ### Speech Analysis
+
 - Calculate speaking pace in words per minute.
 - Detect common filler words and count their occurrences.
 - Identify common self-correction phrases.
-- Measure speaking duration and word count.
+- Analyse repeated speech patterns.
 
-### AI-Powered Feedback
-- Generate clearer alternative versions of spoken responses while aiming to preserve their original meaning.
-- Check whether responses are relevant to the assigned prompt.
-- Provide feedback and practice suggestions based on detected speaking patterns.
+These measurements are intended to help learners recognise habits in their spoken responses. They are not a complete assessment of communication ability.
 
-### Progress Tracking
-- Save and retrieve previous practice sessions.
-- Track consecutive practice days.
-- Build a communication profile from recent sessions.
-- Estimate performance trends across sessions.
-- Recommend exercises based on identified weaknesses.
+### AI-Assisted Feedback
+
+- Generate alternative versions of spoken responses while aiming to preserve their original meaning.
+- Check whether a response is relevant to its assigned speaking prompt.
+- Provide feedback based on detected speaking patterns.
+- Suggest practice activities for identified areas of improvement.
+
+AI-generated feedback can be inaccurate, so suggestions should be treated as guidance rather than definitive evaluations.
+
+### Session History and Progress
+
+- Save completed practice sessions to a local SQLite database.
+- Review previous sessions.
+- Track practice streaks.
+- View speaking metrics and feedback from earlier sessions.
+- Generate an adaptive profile using available session data.
+
+Progress estimates depend on the available session history and the application's scoring logic. They should not be interpreted as scientifically validated communication scores.
+
+### Local User Profile
+
+- Edit the display name shown in the dashboard.
+- Generate the profile avatar from the first letter of the display name.
+- Retain the display name between page refreshes and server restarts.
+
+The current application is designed for local use. It does not currently provide a complete account system or separate authenticated profiles for multiple users.
 
 ## How It Works
 
-1. The learner receives a speaking prompt.
+1. The user receives a speaking prompt.
 2. They record their response in the browser.
-3. The audio is sent to the Python backend.
-4. Whisper transcribes the recording.
-5. The backend calculates speech metrics and identifies patterns.
-6. AI services analyse the response and generate feedback.
-7. Session data is saved to Supabase.
-8. Previous sessions inform progress tracking and practice recommendations.
+3. The browser sends the audio to the Python backend.
+4. The backend uses the Groq API for speech transcription.
+5. The application calculates speaking metrics and identifies speech patterns.
+6. AI services generate response suggestions and prompt relevance feedback.
+7. Session information is stored in a local SQLite database.
+8. The application uses saved sessions to display history and estimate progress.
 
 ## Tech Stack
 
@@ -55,32 +70,35 @@ It analyses speaking patterns, identifies potential areas for improvement, and t
 | Frontend | HTML, CSS, JavaScript |
 | Speech-to-Text | Whisper through the Groq API |
 | Language Model | GPT-OSS 120B through the Groq API |
-| Database | Supabase |
-| API Integration | OpenAI-compatible Python client |
+| Database | SQLite |
+| AI API Integration | OpenAI-compatible Python client |
 
-## Architecture
+## Project Structure
 
-The backend is organised into modules with separate responsibilities.
-
-| Module | Responsibility |
+| File or directory | Purpose |
 | --- | --- |
-| `app.py` | FastAPI application and API routes |
-| `transcriber.py` | Audio transcription |
+| `app.py` | FastAPI application and API endpoints |
+| `tracker.py` | SQLite database operations and session history |
+| `transcriber.py` | Speech transcription through Groq |
 | `analyzer.py` | Speaking pace, filler words, and self-correction detection |
-| `ai_analyzer.py` | AI-assisted response rewriting and prompt relevance checks |
-| `feedback.py` | Feedback messages and practice missions |
-| `adaptive_engine.py` | Scores, progress trends, and exercise recommendations |
-| `tracker.py` | Session history and practice streaks |
+| `ai_analyzer.py` | AI-assisted response rewriting and relevance checks |
+| `feedback.py` | Feedback generation and practice missions |
+| `adaptive_engine.py` | Progress estimates and exercise recommendations |
 | `prompts.py` | Speaking prompt selection |
+| `main.py` | Command-line application entry point |
+| `static/` | Browser interface, styles, and JavaScript |
+| `test_flow.py` | Tests for the practice and analysis flow |
+| `test_profile.py` | Tests for profile functionality |
+| `data/` | Local database storage, generated when the application runs |
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.10 or newer
+- Python
 - Git
 - A Groq API key
-- A Supabase project with the required database configuration
+- An internet connection for Groq API requests
 
 ### 1. Clone the repository
 
@@ -91,333 +109,18 @@ cd recraftt
 
 ### 2. Create a virtual environment
 
-```bash
-python -m venv venv
-```
-## 👀 Features at a Glance
-
-### 🎤 In-Browser Voice Recorder
-- One-click recording directly from your browser — no plugins required!
-- Live recording interface with an animated waveform
-- On-screen countdown timer tracks session duration
-- Recordings are sent securely to the backend as `.webm` audio blobs
-
-### 📝 AI Transcription via Whisper
-- Recorded speech is transcribed using Whisper
-- Produces a text transcript for communication analysis
-- Handles silent recordings gracefully and alerts the learner when no speech is detected
-
-### 📊 Speech Metrics Dashboard
-
-After every speaking session, recraftt. provides an instant breakdown:
-
-| Metric | What It Measures |
-|---|---|
-| **Speaking Pace** | Words per minute (WPM) with a slow / balanced / fast indicator |
-| **Duration** | Total speaking time in seconds |
-| **Word Count** | Total words spoken during the session |
-
-### 🚦 Filler Word Detection
-- Detects common filler words such as:
-  `um`, `uh`, `like`, `you know`, `so`, `actually`, `basically`, `literally`, `right`, `okay`, `well`, `mm`, `hmm`
-- Displays detected fillers and their counts
-- Filler usage contributes to the learner's communication profile
-- The system can identify filler words as a primary area for improvement
-
-### ✂️ Self-Correction & Broken-Phrasing Detection
-- Detects self-corrections and broken sentence structures
-- Identifies patterns such as:
-  - `"I meant..."`
-  - `"let me rephrase..."`
-  - `"what I meant was..."`
-  - `"sorry..."`
-- Uses these signals to evaluate speaking fluency and communication control
-
-### 🤖 AI Communication Analysis
-
-recraftt. uses an AI analysis layer to evaluate the learner's complete spoken response.
-
-The current AI analysis uses the configured `gpt-oss-120b` model through the Groq API.
-
-The system evaluates communication aspects such as:
-
-- Clarity
-- Confidence
-- Organisation
-- Speaking flow
-- Sentence construction
-- Overall communication effectiveness
-
-### ✨ A Better Way to Say It
-
-Instead of correcting individual phrases separately, recraftt. reconstructs the learner's **complete spoken response** into a clearer and more natural version.
-
-The goal is to preserve the learner's original meaning while removing:
-
-- Hesitation
-- Broken phrasing
-- Unnecessary repetition
-- Awkward sentence construction
-- Stutters and restarts
-
-#### Example
-
-**You said:**
-
-> "I have to get to um there I think to my colleague meeting at 7 pm."
-
-**A clearer way to say it:**
-
-> "I have to meet my colleague at their place at 7 pm."
-
-The system does not intentionally change the speaker's facts, people, locations, times, opinions, or intended meaning.
-
-### 🧠 Communication Profile
-
-recraftt. builds a communication profile from repeated speaking sessions.
-
-The profile currently tracks:
-
-- **Pace Score**
-- **Filler Control**
-- **Fluency / Self-Correction Score**
-- **Communication Trend**
-- **Primary Weakness**
-- **Today's Recommendation**
-
-The profile uses recent sessions to provide a more meaningful picture of the learner's communication habits instead of relying only on a single recording.
-
-### 🎯 Personalised Feedback & Missions
-
-After each session, recraftt. provides targeted coaching based on the learner's performance.
-
-Examples:
-
-- Too many fillers → Practice replacing filler words with silent pauses
-- Speaking too quickly → Focus on controlled pacing and pauses
-- Frequent self-corrections → Plan the sentence before speaking
-- Communication weakness identified → Receive a targeted practice recommendation
-
-The goal is to turn analysis into an actionable next step.
-
-### 🏆 Daily Speaking Prompts
-
-- Curated speaking prompts provide realistic practice scenarios
-- Prompts cover personal, professional and creative topics
-- A refresh option allows learners to generate another prompt
-- Prompts encourage spontaneous spoken communication
-
-### 🔥 Streak Tracker
-
-- Tracks consecutive practice days
-- Displays the learner's current practice streak
-- Encourages consistent speaking practice
-
-### 📂 Session History
-
-- Speaking sessions are stored in Supabase
-- Previous sessions can be viewed from the dashboard
-- History includes:
-  - Date and time
-  - Prompt
-  - Speaking pace
-  - Filler count
-  - Correction count
-- Individual sessions can be deleted from the interface
-
----
-
-## 🧠 Adaptive Learning
-
-The SIH26207 version extends recraftt. from a speech-analysis tool into an adaptive learning system.
-
-The intended learning loop is:
-
-```text
-Assessment
-    ↓
-Skill Profile
-    ↓
-Gap Detection
-    ↓
-Personalised Mission
-    ↓
-Practice
-    ↓
-Reassessment
-    ↓
-Progress
-````
-
-Instead of giving every learner identical speaking exercises, the system uses their measured communication performance to identify areas that need attention.
-
-For example:
-
-```text
-High Filler Usage
-        ↓
-Filler Control identified as weakness
-        ↓
-Silent-Pause Practice
-        ↓
-New Speaking Session
-        ↓
-Reassessment
-```
-
-This creates a continuous feedback loop where practice can become increasingly personalised to the learner.
-
----
-
-## 📈 Communication Scoring
-
-The current communication profile uses measurable signals from speaking sessions.
-
-### Speaking Pace
-
-The pace score evaluates how close the learner's speaking speed is to a balanced speaking range.
-
-### Filler Control
-
-The filler score is based on the proportion of filler words relative to the total number of spoken words.
-
-### Fluency
-
-The fluency score considers the frequency of detected self-corrections relative to the spoken response.
-
-### Communication Trend
-
-Repeated session scores are compared to identify whether the learner's communication performance is:
-
-* **Improving**
-* **Stable**
-* **Declining**
-
-The system uses recent sessions to reduce the effect of individual outlier recordings.
-
----
-
-## 🔄 End-to-End Learning Flow
-
-```text
-Daily Prompt
-     ↓
-Voice Recording
-     ↓
-Whisper Transcription
-     ↓
-Speech Metrics
-     ↓
-Filler Detection
-     ↓
-Self-Correction Analysis
-     ↓
-AI Communication Analysis
-     ↓
-"A Better Way to Say It"
-     ↓
-Personalised Feedback
-     ↓
-Communication Profile
-     ↓
-Next Practice Recommendation
-     ↓
-Session History
-     ↓
-Reassessment
-```
-
----
-
-## 🏗️ Architecture
-
-```text
-recraftt/
-├── app.py                 # FastAPI backend — REST API routes
-├── transcriber.py         # Groq's Whisper speech transcription
-├── analyzer.py            # Pace, filler & correction analysis
-├── ai_analyzer.py         # Groq's GPT-OSS-120b AI communication analysis & rewriting
-├── adaptive_engine.py     # Communication profile & adaptive scoring
-├── feedback.py            # Feedback & mission generation
-├── prompts.py             # Speaking prompt bank
-├── tracker.py             # Session persistence & streak calculation
-├── static/
-│   ├── index.html         # Dashboard interface
-│   ├── style.css          # UI design system
-│   └── app.js             # Frontend logic & API integration
-└── requirements.txt       # Python dependencies
-```
-
----
-
-## 🛠️ Tech Stack
-
-| Layer              | Technology                                    |
-| ------------------ | --------------------------------------------- |
-| **Backend**        | Python · FastAPI · Uvicorn                    |
-| **Speech-to-Text** | Whisper                                       |
-| **AI / NLP**       | Groq API · `gpt-oss-120b`                     |
-| **Frontend**       | Vanilla HTML · CSS · JavaScript               |
-| **Design**         | Glassmorphism · Playfair Display · Canvas API |
-| **Storage**        | Supabase                                      |
-
----
-
-## 🎓 Smart Education Direction
-
-recraftt. is designed around the idea that effective digital learning should respond to the individual learner.
-
-A learner who struggles with filler words should not receive the same intervention as someone who speaks too quickly.
-
-The system therefore aims to move from:
-
-```text
-Same Practice → Same Feedback
-```
-
-towards:
-
-```text
-Individual Assessment
-        ↓
-Individual Skill Profile
-        ↓
-Individual Weakness
-        ↓
-Individual Practice
-        ↓
-Individual Progress
-```
-
-This forms the foundation for an adaptive communication-learning platform.
-
-Activate it on Windows:
+On Windows:
 
 ```powershell
-venv\Scripts\activate
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-Activate it on Linux or macOS:
-* [✔] User authentication & cloud session storage
-* [✔] In-browser voice recording
-* [✔] Whisper transcription
-* [✔] Speaking pace analysis
-* [✔] Filler-word detection
-* [✔] Self-correction detection
-* [✔] AI communication analysis
-* [✔] Full-response AI rephrasing
-* [✔] Personalised feedback
-* [✔] Next-session recommendations
-* [✔] Communication Profile
-* [✔] Session History
-* [✔] Adaptive communication scoring
-* [ ] Expanded adaptive practice categories
-* [ ] Long-term progress visualisation
-* [ ] Advanced pronunciation analysis
-* [ ] Expanded learning analytics
+On Linux or macOS:
 
 ```bash
-source venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
@@ -426,133 +129,57 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
+### 4. Configure the environment
 
-Create a `.env` file in the project root:
-## 🚀 Running Locally
-
-### 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd recraftt.
-```
-
-### 2. Create a virtual environment
-
-```bash
-python -m venv venv
-```
-
-### 3. Activate the environment
-
-#### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-#### Linux / macOS
-
-```bash
-source venv/bin/activate
-```
-
-### 4. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Configure environment variables
-
-Create a `.env` file containing the required API and database credentials.
-
-### 6. Start the server
-
-```bash
-uvicorn app:app --reload
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 📌 Project Goal
-
-recraftt. aims to turn spoken communication practice into a measurable and personalised learning experience.
-
-Instead of simply telling a learner whether their speech was "good" or "bad", the system identifies specific communication patterns, explains how to improve them, recommends what to practise next, and tracks performance across sessions.
-
-The long-term goal is:
-
-> **Assess → Personalise → Practise → Reassess → Improve**
+Create a `.env` file in the project root using `.env.example` as a template.
 
 ```env
 GROQ_API_KEY=your_groq_api_key
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Replace the placeholder values with your actual credentials.
+Replace the placeholder with your own Groq API key.
 
-- `GROQ_API_KEY` is used to access Groq's transcription and language-model APIs.
-- `SUPABASE_URL` identifies your Supabase project.
-- `SUPABASE_ANON_KEY` is used by the backend to connect to Supabase.
-This project is a prototype developed for Smart India Hackathon 2026.
+**Never commit your `.env` file or publish your API key.**
 
-**Never commit your `.env` file or expose your API keys and tokens publicly.** Configure appropriate Supabase access policies and secure authentication before deploying the application.
-
-### 5. Start the server
+### 5. Start the application
 
 ```bash
-uvicorn app:app --reload
+python -m uvicorn app:app --reload --port 8000
 ```
 
-Open `http://127.0.0.1:8000` in your browser.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
-Local setup may require additional configuration for Supabase authentication, database tables, and frontend integration.
+The application creates its local SQLite database when required. The Groq API still requires an internet connection for transcription and AI-powered features.
 
-## Project Goals
+## Storage and Privacy
 
-recraftt. is built around a simple idea: speaking practice should help learners understand what to improve, not just show them a transcript.
+Practice sessions and the local display profile are stored in SQLite on the machine running the application.
 
-The intended learning cycle is:
+Audio is sent to the Groq API for transcription and may be processed by AI services as part of the analysis workflow. Do not assume that audio or transcripts remain exclusively on your machine.
 
-**Assess → Understand → Practise → Reassess → Improve**
-
-The long-term goal is to make practice more responsive to each learner's communication patterns and progress over time.
+The current version does not include a production-ready multi-user account system, remote synchronisation, or deployment-grade authentication.
 
 ## Development
 
 recraftt. is a personal project developed through a combination of my own work and AI-assisted development.
 
-I developed the Python backend and used Google Antigravity to make with the HTML, CSS, and JavaScript frontend.
+I worked on the Python backend and application logic, while using Google Antigravity to assist with the HTML, CSS, and JavaScript frontend. AI assistance was also part of the overall development process.
 
-Working on this project has given me practical experience with Python backend development, API integration, speech processing, database-backed applications, and AI services.
+Building this project has given me practical experience with Python backend development, API integration, speech processing, database operations, frontend and backend communication, and debugging an application across multiple components.
 
 ## Roadmap
 
 Potential future improvements include:
 
-- More robust speech and fluency analysis.
-- More varied personalised practice exercises.
-- Improved progress visualisation.
+- More robust speech pattern detection.
 - Better testing and error handling.
-- Expanded documentation.
+- More detailed progress visualisation.
+- Additional practice prompts and exercises.
+- Improved accessibility and user experience.
+- A proper account system if multi-user support is introduced.
 
-## Contributing
-
-Suggestions, bug reports, and constructive feedback are welcome.
+These are potential improvements, not claims about features already implemented.
 
 ## License
 
-No license has been specified yet. Please check the repository for licensing information before reusing or distributing the code.
-<p align="center">
-Built to help students speak better, one session at a time.
-</p>
-
+No license has been specified for this project yet. Until a license is added, do not assume that the code is available for unrestricted reuse or redistribution.

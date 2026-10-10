@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>recraftt.</title>
@@ -66,7 +65,15 @@
                             <span id="popoverLevelBadge" class="challenge-badge developing">DEVELOPING</span>
                         </div>
                     </div>
-                    <button id="logoutBtn" class="btn btn-secondary popover-logout-btn">Sign Out</button>
+                    <button id="editProfileBtn" class="btn btn-secondary popover-logout-btn">Edit Profile</button>
+                    <div id="editProfileForm" class="hidden profile-edit-form">
+                        <input type="text" id="profileNameInput" class="profile-input" placeholder="Display Name" maxlength="40">
+                        <span id="profileErrorMsg" class="profile-error"></span>
+                        <div class="profile-edit-actions">
+                            <button id="saveProfileBtn" class="btn btn-primary profile-save-btn">Save</button>
+                            <button id="cancelProfileBtn" class="btn btn-secondary profile-cancel-btn">Cancel</button>
+                        </div>
+                    </div>
                     <p class="popover-footer-note">"More modes coming soon"</p>
                 </div>
             </div>
