@@ -641,7 +641,10 @@ async function renderProgressChart() {
 document.querySelectorAll(".google-login-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
         const { error } = await supabaseClient.auth.signInWithOAuth({
-            provider: "google"
+            provider: "google",
+            options: {
+                redirectTo: 'https://recrafttforstudents.onrender.com',
+            }
         });
         if (error) console.error("Login error:", error);
     });
