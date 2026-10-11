@@ -161,9 +161,7 @@ The current version does not include a production-ready multi-user account syste
 
 ## Development
 
-recraftt. is a personal project developed through a combination of my own work and AI-assisted development.
-
-I worked on the Python backend and application logic, while using Google Antigravity to assist with the HTML, CSS, and JavaScript frontend. AI assistance was also part of the overall development process.
+I came up with the idea for recraftt. and used Google Antigravity to implement the project, including its frontend, backend, and SQLite migration. I guided the development through my ideas and requirements, then tested the application and worked through issues as they came up.
 
 Building this project has given me practical experience with Python backend development, API integration, speech processing, database operations, frontend and backend communication, and debugging an application across multiple components.
 
